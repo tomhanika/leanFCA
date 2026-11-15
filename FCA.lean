@@ -1,6 +1,7 @@
 module
 
 public import FCA.Algorithm.Lectic
+public import FCA.Association.Basic
 public import FCA.ClosureSystem
 public import FCA.Concept.BasicTheorem
 public import FCA.Concept.Dense
