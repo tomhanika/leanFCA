@@ -14,4 +14,6 @@ public import FCA.Implication.CanonicalBase
 public import FCA.Implication.Minimal
 public import FCA.Implication.PseudoClosed
 public import FCA.ManyValued.Basic
+public import FCA.Morphism.Bond
+public import FCA.Morphism.Infomorphism
 public import FCA.Scale.Standard
