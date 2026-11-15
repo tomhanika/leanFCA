@@ -26,8 +26,8 @@ specification from `Mathlib.Order.Concept`.
 ## Implementation notes
 
 `FCA.intents` filters the whole powerset of the attribute set, which is exponential in the number
-of attributes regardless of the number of concepts. It serves as an executable specification;
-efficient enumeration algorithms such as NextClosure are left for future work.
+of attributes regardless of the number of concepts. It serves as an executable specification; see
+`FCA.Algorithm.NextClosure` for the verified enumeration `FCA.intentsList` in lectic order.
 -/
 
 @[expose] public section
