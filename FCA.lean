@@ -1,11 +1,17 @@
 module
 
+public import FCA.Algorithm.CanonicalBase
+public import FCA.Algorithm.ImplicationClosure
 public import FCA.Algorithm.Lectic
+public import FCA.Algorithm.NextClosure
 public import FCA.Association.Basic
 public import FCA.ClosureSystem
 public import FCA.Concept.BasicTheorem
 public import FCA.Concept.Dense
+public import FCA.Context.Arrows
+public import FCA.Context.Clarified
 public import FCA.Context.Constructions
+public import FCA.Context.Reduced
 public import FCA.Finite.Basic
 public import FCA.Finite.Concept
 public import FCA.Implication.Armstrong
