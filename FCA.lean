@@ -23,3 +23,7 @@ public import FCA.ManyValued.Basic
 public import FCA.Morphism.Bond
 public import FCA.Morphism.Infomorphism
 public import FCA.Scale.Standard
+public import FCA.ScaleMeasure.Basic
+public import FCA.ScaleMeasure.Dimension
+public import FCA.ScaleMeasure.Hierarchy
+public import FCA.ScaleMeasure.Logical

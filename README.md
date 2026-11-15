@@ -41,6 +41,11 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | **Scaling** | |
 | `FCA.Scale.Standard` | Nominal, ordinal, interordinal, contranominal and dichotomic scales |
 | `FCA.ManyValued.Basic` | Many-valued contexts, plain scaling, functional dependencies |
+| **Scale-measures** | |
+| `FCA.ScaleMeasure.Basic` | Scale-measures as continuous maps, refinement and equivalence, apposition, attribute projection |
+| `FCA.ScaleMeasure.Hierarchy` | The scale-hierarchy is isomorphic to the complete lattice of closure systems of extents; canonical representation; meet and join |
+| `FCA.ScaleMeasure.Logical` | Logical attributes and the conjunctive normal form of scale-measures |
+| `FCA.ScaleMeasure.Dimension` | Ferrers dimension bounds for scale-measures |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |
 | `FCA.Morphism.Infomorphism` | Infomorphisms and context isomorphisms |
