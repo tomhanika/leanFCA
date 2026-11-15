@@ -1,0 +1,24 @@
+name = "FCA"
+version = "0.1.0"
+description = "Formal concept analysis in Lean 4, building on Mathlib."
+keywords = ["math", "formal-concept-analysis", "order-theory", "lattice-theory"]
+license = "Apache-2.0"
+defaultTargets = ["FCA"]
+testDriver = "FCATest"
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.35.0"
+
+[[lean_lib]]
+name = "FCA"
+
+[[lean_lib]]
+name = "FCATest"
