@@ -16,7 +16,7 @@ and, where possible, their extents, intents and concept lattices.
 
 ## Main definitions
 
-* `FCA.compl`: the complementary context.
+* `FCA.complement`: the complementary context.
 * `FCA.apposition`, `FCA.subposition`: glueing two contexts along a common object set
   (respectively a common attribute set).
 * `FCA.restrict`, `FCA.restrictObjects`, `FCA.restrictAttributes`: subcontexts.
@@ -214,54 +214,58 @@ section Compl
 
 variable {r : α → β → Prop} {s : Set α} {t : Set β} {a : α} {b : β}
 
-/-- The *complementary context* of `r`: an object has an attribute in `compl r` iff it does not
+/-- The *complementary context* of `r`: an object has an attribute in `complement r` iff it does not
 have it in `r`. -/
-def compl (r : α → β → Prop) : α → β → Prop :=
+def complement (r : α → β → Prop) : α → β → Prop :=
   fun a b ↦ ¬ r a b
 
+/-- The complementary context is the pointwise complement `rᶜ` of the relation. -/
+theorem complement_eq_compl (r : α → β → Prop) : complement r = rᶜ :=
+  rfl
+
 @[simp]
-theorem compl_apply : compl r a b ↔ ¬ r a b :=
+theorem complement_apply : complement r a b ↔ ¬ r a b :=
   Iff.rfl
 
 @[simp]
-theorem compl_compl (r : α → β → Prop) : compl (compl r) = r := by
+theorem complement_complement (r : α → β → Prop) : complement (complement r) = r := by
   ext a b
   exact not_not
 
-theorem compl_injective : Injective (compl : (α → β → Prop) → α → β → Prop) :=
-  LeftInverse.injective compl_compl
+theorem complement_injective : Injective (complement : (α → β → Prop) → α → β → Prop) :=
+  LeftInverse.injective complement_complement
 
-theorem swap_compl (r : α → β → Prop) : swap (compl r) = compl (swap r) :=
+theorem swap_complement (r : α → β → Prop) : swap (complement r) = complement (swap r) :=
   rfl
 
-theorem mem_upperPolar_compl : b ∈ upperPolar (compl r) s ↔ ∀ a ∈ s, ¬ r a b :=
+theorem mem_upperPolar_complement : b ∈ upperPolar (complement r) s ↔ ∀ a ∈ s, ¬ r a b :=
   Iff.rfl
 
-theorem mem_lowerPolar_compl : a ∈ lowerPolar (compl r) t ↔ ∀ b ∈ t, ¬ r a b :=
+theorem mem_lowerPolar_complement : a ∈ lowerPolar (complement r) t ↔ ∀ b ∈ t, ¬ r a b :=
   Iff.rfl
 
 /-- The object intents of the complementary context are the complements of the object intents. -/
 @[simp]
-theorem upperPolar_compl_singleton (r : α → β → Prop) (a : α) :
-    upperPolar (compl r) {a} = (upperPolar r {a})ᶜ := by
+theorem upperPolar_complement_singleton (r : α → β → Prop) (a : α) :
+    upperPolar (complement r) {a} = (upperPolar r {a})ᶜ := by
   ext b
   simp
 
 /-- The attribute extents of the complementary context are the complements of the attribute
 extents. -/
 @[simp]
-theorem lowerPolar_compl_singleton (r : α → β → Prop) (b : β) :
-    lowerPolar (compl r) {b} = (lowerPolar r {b})ᶜ := by
+theorem lowerPolar_complement_singleton (r : α → β → Prop) (b : β) :
+    lowerPolar (complement r) {b} = (lowerPolar r {b})ᶜ := by
   ext a
   simp
 
-theorem upperPolar_compl (r : α → β → Prop) (s : Set α) :
-    upperPolar (compl r) s = ⋂ a ∈ s, (upperPolar r {a})ᶜ := by
+theorem upperPolar_complement (r : α → β → Prop) (s : Set α) :
+    upperPolar (complement r) s = ⋂ a ∈ s, (upperPolar r {a})ᶜ := by
   ext b
   simp [mem_upperPolar_iff]
 
-theorem lowerPolar_compl (r : α → β → Prop) (t : Set β) :
-    lowerPolar (compl r) t = ⋂ b ∈ t, (lowerPolar r {b})ᶜ := by
+theorem lowerPolar_complement (r : α → β → Prop) (t : Set β) :
+    lowerPolar (complement r) t = ⋂ b ∈ t, (lowerPolar r {b})ᶜ := by
   ext a
   simp [mem_lowerPolar_iff]
 
@@ -640,13 +644,13 @@ theorem swap_directSum (r₁ : α₁ → β₁ → Prop) (r₂ : α₂ → β₂
   ext (b | b) (a | a) <;> rfl
 
 /-- The direct sum is the complement of the disjoint union of the complements. -/
-theorem compl_directSum (r₁ : α₁ → β₁ → Prop) (r₂ : α₂ → β₂ → Prop) :
-    compl (directSum r₁ r₂) = disjointUnion (compl r₁) (compl r₂) := by
+theorem complement_directSum (r₁ : α₁ → β₁ → Prop) (r₂ : α₂ → β₂ → Prop) :
+    complement (directSum r₁ r₂) = disjointUnion (complement r₁) (complement r₂) := by
   ext (a | a) (b | b) <;> simp
 
 /-- The disjoint union is the complement of the direct sum of the complements. -/
-theorem compl_disjointUnion (r₁ : α₁ → β₁ → Prop) (r₂ : α₂ → β₂ → Prop) :
-    compl (disjointUnion r₁ r₂) = directSum (compl r₁) (compl r₂) := by
+theorem complement_disjointUnion (r₁ : α₁ → β₁ → Prop) (r₂ : α₂ → β₂ → Prop) :
+    complement (disjointUnion r₁ r₂) = directSum (complement r₁) (complement r₂) := by
   ext (a | a) (b | b) <;> simp
 
 theorem lowerPolar_directSum (r₁ : α₁ → β₁ → Prop) (r₂ : α₂ → β₂ → Prop) (t : Set (β₁ ⊕ β₂)) :
