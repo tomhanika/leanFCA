@@ -45,10 +45,15 @@ classical theory of the lattice of closure systems (Caspard and Monjardet).
   element has this form (`FCA.ClosureSubsystem.InfIrred.exists_respecting`).
 * `FCA.ClosureSubsystem.sup_inf_le_iff_total`: the lattice is distributive if and only if the
   extents form a chain.
+* `FCA.ClosureSubsystem.sup_eq_sup_inf_of_sup_eq_sup`: for finite contexts the lattice is
+  join-semidistributive.
+* `FCA.ClosureSubsystem.IccCoreIso`: the lattice is meet-distributive, that is, the interval
+  between a closure system and the meet of its lower covers is a powerset lattice.
 
 ## Implementation notes
 
-Only the grading and the classification of all meet-irreducible elements need finiteness.
+Only the grading, the classification of all meet-irreducible elements and
+join-semidistributivity need finiteness.
 
 The number of meet-irreducible elements is the number of covering pairs of the *concept lattice*
 (`FCA.ClosureSubsystem.natCard_infIrred`), not of the scale-hierarchy.
@@ -524,6 +529,119 @@ def distribLattice (h : ∀ A B, IsExtent r A → IsExtent r B → A ⊆ B ∨ B
     DistribLattice (ClosureSubsystem r) :=
   { (inferInstance : Lattice (ClosureSubsystem r)) with
     le_sup_inf := (sup_inf_le_iff_total.2 h) }
+
+/-! ### Join-semidistributivity -/
+
+/-- For a finite context the lattice of closure systems of extents is join-semidistributive. -/
+theorem sup_eq_sup_inf_of_sup_eq_sup [Finite α] (h : 𝒜 ⊔ ℬ = 𝒜 ⊔ 𝒞) :
+    𝒜 ⊔ ℬ = 𝒜 ⊔ ℬ ⊓ 𝒞 := by
+  refine le_antisymm (le_def.2 fun D ↦ ?_) (sup_le_sup_left inf_le_left _)
+  refine WellFoundedGT.induction (motive := fun D ↦ D ∈ 𝒜 ⊔ ℬ → D ∈ 𝒜 ⊔ ℬ ⊓ 𝒞) D fun D ih hD ↦ ?_
+  obtain ⟨A, hA, B, hB, hAB⟩ := mem_sup.1 hD
+  obtain ⟨A', hA', C, hC, hAC⟩ := mem_sup.1 (h ▸ hD)
+  by_cases h₁ : D = B
+  · by_cases h₂ : D = C
+    · exact le_def.1 le_sup_right (mem_inf.2 ⟨h₁ ▸ hB, h₂ ▸ hC⟩)
+    · have hlt : D ⊂ C := (hAC ▸ inter_subset_right).ssubset_of_ne h₂
+      have hC' : C ∈ 𝒜 ⊔ ℬ := h ▸ le_def.1 le_sup_right hC
+      exact hAC ▸ inter_mem (le_def.1 le_sup_left hA') (ih C hlt hC')
+  · have hlt : D ⊂ B := (hAB ▸ inter_subset_right).ssubset_of_ne h₁
+    exact hAB ▸ inter_mem (le_def.1 le_sup_left hA) (ih B hlt (le_def.1 le_sup_right hB))
+
+/-! ### Meet-distributivity -/
+
+/-- The closed sets of `ℬ` that are not intersections of other closed sets of `ℬ`. -/
+def irreducibles (ℬ : ClosureSubsystem r) : Set (Set α) :=
+  {A | A ∈ ℬ ∧ ⋂₀ {B | B ∈ ℬ ∧ A ⊂ B} ≠ A}
+
+/-- The closure system obtained from `ℬ` by keeping, among its irreducible closed sets, only
+those in `J`. -/
+def restrictIrreducibles (ℬ : ClosureSubsystem r) (J : Set (Set α)) : ClosureSubsystem r where
+  carrier := {B | B ∈ ℬ ∧ (B ∈ ℬ.irreducibles → B ∈ J)}
+  sInter_mem' S hS := by
+    refine ⟨ℬ.sInter_mem fun B hB ↦ (hS hB).1, fun hirr ↦ ?_⟩
+    by_cases hmem : ⋂₀ S ∈ S
+    · exact (hS hmem).2 hirr
+    · refine absurd (Subset.antisymm ?_ (subset_sInter fun B hB ↦ hB.2.subset)) hirr.2
+      refine sInter_subset_sInter fun B hB ↦ ⟨(hS hB).1, ?_⟩
+      exact (sInter_subset_of_mem hB).ssubset_of_ne fun heq ↦ hmem (heq ▸ hB)
+  isExtent' _ hB := ℬ.isExtent hB.1
+
+@[simp]
+theorem mem_restrictIrreducibles {J : Set (Set α)} :
+    B ∈ ℬ.restrictIrreducibles J ↔ B ∈ ℬ ∧ (B ∈ ℬ.irreducibles → B ∈ J) :=
+  Iff.rfl
+
+theorem restrictIrreducibles_le {J : Set (Set α)} : ℬ.restrictIrreducibles J ≤ ℬ :=
+  le_def.2 fun _ hB ↦ hB.1
+
+/-- Removing one irreducible closed set yields a lower cover. -/
+theorem restrictIrreducibles_covBy (hA : A ∈ ℬ.irreducibles) :
+    ℬ.restrictIrreducibles (ℬ.irreducibles \ {A}) ⋖ ℬ := by
+  refine covBy_iff.2 ⟨A, fun h ↦ (h.2 hA).2 rfl, Set.ext fun B ↦ ?_⟩
+  simp only [mem_carrier, mem_insert_iff, mem_restrictIrreducibles, mem_sdiff,
+    mem_singleton_iff]
+  by_cases hB : B = A
+  · simp [hB, hA.1]
+  · simp [hB]
+
+/-- The lower covers of `ℬ` are obtained by removing one irreducible closed set. -/
+theorem covBy_iff_exists_irreducibles :
+    𝒜 ⋖ ℬ ↔ ∃ A ∈ ℬ.irreducibles, 𝒜.carrier = {B | B ∈ ℬ ∧ B ≠ A} := by
+  constructor
+  · intro h
+    obtain ⟨A, hA, hℬ⟩ := covBy_iff.1 h
+    have hmem : ∀ B, B ∈ ℬ → B = A ∨ B ∈ 𝒜 := fun B hB ↦
+      (hℬ ▸ mem_carrier.2 hB : B ∈ insert A 𝒜.carrier)
+    refine ⟨A, ⟨mem_carrier.1 (hℬ ▸ mem_insert A _), fun heq ↦ hA ?_⟩, Set.ext fun B ↦
+      ⟨fun hB ↦ ⟨le_def.1 h.le hB, fun h' ↦ hA (h' ▸ hB)⟩,
+        fun hB ↦ (hmem B hB.1).resolve_left hB.2⟩⟩
+    rw [← heq]
+    exact 𝒜.sInter_mem fun B hB ↦ (hmem B hB.1).resolve_left hB.2.ne'
+  · rintro ⟨A, hA, h𝒜⟩
+    convert restrictIrreducibles_covBy hA using 1
+    refine ClosureSubsystem.ext (h𝒜.trans (Set.ext fun B ↦ ?_))
+    simp only [mem_ofPred, mem_carrier, mem_restrictIrreducibles, mem_sdiff, mem_singleton_iff]
+    refine and_congr_right fun hB ↦ ⟨fun h _ ↦ ⟨‹_›, h⟩, fun h hBA ↦ (h (hBA ▸ hA)).2 hBA⟩
+
+/-- The closure system of the closed sets of `ℬ` that are intersections of other closed sets. -/
+def core (ℬ : ClosureSubsystem r) : ClosureSubsystem r :=
+  ℬ.restrictIrreducibles ∅
+
+theorem mem_core : B ∈ ℬ.core ↔ B ∈ ℬ ∧ B ∉ ℬ.irreducibles :=
+  Iff.rfl
+
+/-- The core of `ℬ` is the meet of the lower covers of `ℬ`. -/
+theorem core_eq_inf_sInf_covBy (ℬ : ClosureSubsystem r) : ℬ.core = ℬ ⊓ sInf {𝒜 | 𝒜 ⋖ ℬ} := by
+  ext B
+  rw [mem_carrier, mem_carrier, mem_inf, mem_sInf, mem_core]
+  refine and_congr_right fun hB ↦ ⟨fun hirr ↦ ⟨ℬ.isExtent hB, fun 𝒜 h𝒜 ↦ ?_⟩, fun h hirr ↦ ?_⟩
+  · obtain ⟨A, hA, h𝒜⟩ := covBy_iff_exists_irreducibles.1 h𝒜
+    exact mem_carrier.1 (h𝒜 ▸ ⟨hB, fun h ↦ hirr (h ▸ hA)⟩)
+  · exact ((h.2 _ (restrictIrreducibles_covBy hirr)).2 hirr).2 rfl
+
+/-- The lattice of closure systems of extents is **meet-distributive**: the interval between a
+closure system `ℬ` and the meet of its lower covers is a Boolean lattice, namely the powerset of
+the irreducible closed sets of `ℬ`. -/
+def IccCoreIso (ℬ : ClosureSubsystem r) : Set.Icc ℬ.core ℬ ≃o Set ℬ.irreducibles :=
+  Equiv.toOrderIso
+    { toFun 𝒜 := {A | A.1 ∈ 𝒜.1}
+      invFun J := ⟨ℬ.restrictIrreducibles (Subtype.val '' J),
+        le_def.2 fun _ hB ↦ ⟨hB.1, fun h ↦ absurd h hB.2⟩, restrictIrreducibles_le⟩
+      left_inv 𝒜 := by
+        refine Subtype.ext (ClosureSubsystem.ext (Set.ext fun B ↦ ⟨fun hB ↦ ?_, fun hB ↦
+          ⟨le_def.1 𝒜.2.2 hB, fun h ↦ ⟨⟨B, h⟩, hB, rfl⟩⟩⟩))
+        by_cases hirr : B ∈ ℬ.irreducibles
+        · obtain ⟨A, hA, rfl⟩ := hB.2 hirr
+          exact hA
+        · exact le_def.1 𝒜.2.1 ⟨hB.1, hirr⟩
+      right_inv J := by
+        ext A
+        refine ⟨fun h ↦ ?_, fun h ↦ ⟨A.2.1, fun _ ↦ ⟨A, h, rfl⟩⟩⟩
+        obtain ⟨A', hA', heq⟩ := h.2 A.2
+        exact Subtype.ext heq ▸ hA' }
+    (fun _ _ h _ hA ↦ le_def.1 h hA)
+    (fun _ _ h ↦ le_def.2 fun _ hB ↦ ⟨hB.1, fun hirr ↦ image_mono h (hB.2 hirr)⟩)
 
 end ClosureSubsystem
 

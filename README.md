@@ -4,6 +4,10 @@ A Lean 4 library for [formal concept analysis](https://en.wikipedia.org/wiki/For
 (FCA), building on [Mathlib](https://github.com/leanprover-community/mathlib4). It covers both
 the theory (machine-checked proofs) and computation (executable, verified algorithms).
 
+> **Beta.** This library is under active development. Names, statements and the module
+> structure may change without notice, and parts of it have not been independently reviewed.
+> Use it at your own risk; it is provided without warranty of any kind (see [LICENSE](LICENSE)).
+
 Lean `v4.35.0`, Mathlib `v4.35.0`. All files are Lean modules; there is no `sorry` and no axiom
 beyond Lean's standard three.
 
@@ -49,7 +53,7 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.ScaleMeasure.Hierarchy` | The scale-hierarchy is isomorphic to the complete lattice of closure systems of extents; canonical representation; meet and join |
 | `FCA.ScaleMeasure.Logical` | Logical attributes and the conjunctive normal form of scale-measures |
 | `FCA.ScaleMeasure.Dimension` | Ferrers and order dimension bounds for scale-measures |
-| `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity |
+| `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, meet-distributivity |
 | `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |
