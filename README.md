@@ -24,12 +24,15 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | **Concept lattices** | |
 | `FCA.Concept.Dense` | Object concepts are supremum-dense, attribute concepts infimum-dense |
 | `FCA.Concept.BasicTheorem` | The basic theorem on concept lattices |
+| `FCA.Concept.Dimension` | The order dimension of a concept lattice equals the Ferrers dimension of its context; order dimension of powersets |
+| `FCA.Order.Dimension` | Realizers and the order dimension of a partial order |
 | `FCA.ClosureSystem` | Extents and intents as closure systems; every closure operator is the intent closure of a context |
 | **Structure of contexts** | |
 | `FCA.Context.Constructions` | Complement, apposition, subposition, subcontexts, disjoint union, direct sum |
 | `FCA.Context.Clarified` | Clarified contexts; clarification preserves the concept lattice |
 | `FCA.Context.Reduced` | Reducible and irreducible objects and attributes; reduction preserves the concept lattice |
 | `FCA.Context.Arrows` | Arrow relations `↙`, `↗`, `⤢` and irreducibility |
+| `FCA.Context.Ferrers` | Ferrers relations and the Ferrers dimension; the contranominal scale |
 | **Implications** | |
 | `FCA.Implication.Basic` | Implications, models, validity, entailment, sound and complete implication sets |
 | `FCA.Implication.Armstrong` | Armstrong rules: soundness and completeness |
@@ -45,7 +48,9 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.ScaleMeasure.Basic` | Scale-measures as continuous maps, refinement and equivalence, apposition, attribute projection |
 | `FCA.ScaleMeasure.Hierarchy` | The scale-hierarchy is isomorphic to the complete lattice of closure systems of extents; canonical representation; meet and join |
 | `FCA.ScaleMeasure.Logical` | Logical attributes and the conjunctive normal form of scale-measures |
-| `FCA.ScaleMeasure.Dimension` | Ferrers dimension bounds for scale-measures |
+| `FCA.ScaleMeasure.Dimension` | Ferrers and order dimension bounds for scale-measures |
+| `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity |
+| `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |
 | `FCA.Morphism.Infomorphism` | Infomorphisms and context isomorphisms |
@@ -79,7 +84,7 @@ abbrev divides (a b : Fin 4) : Prop := a.val ∣ b.val
 * Attribute exploration
 * Concept lattices of disjoint unions (horizontal sums) and of direct products
 * Compatible subcontexts and complete congruences; tolerance relations
-* Structural properties of concept lattices (distributivity, modularity, dimension)
+* Structural properties of concept lattices (distributivity, modularity)
 * Proper premises; an infinitary Armstrong calculus
 
 ## Building
