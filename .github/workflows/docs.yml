@@ -22,8 +22,9 @@ jobs:
       DISABLE_EQUATIONS: "1"
     steps:
       - uses: actions/checkout@v4
-      - name: Add swap space
+      - name: Add swap space and allow memory overcommit
         run: |
+          sudo sysctl -w vm.overcommit_memory=1
           sudo fallocate -l 12G /mnt/docs-swap
           sudo chmod 600 /mnt/docs-swap
           sudo mkswap /mnt/docs-swap
