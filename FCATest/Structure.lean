@@ -105,6 +105,31 @@ finest scale-measure. -/
 example (𝒜 ℬ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) : 𝒜.joinPseudocompl ≤ ℬ ↔ 𝒜 ⊔ ℬ = ⊤ :=
   ClosureSubsystem.joinPseudocompl_le_iff
 
+/-- The join-pseudocomplement of the finest scale-measure is the coarsest one: no irreducible
+extent lies outside the finest scale-measure. -/
+example : (⊤ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).joinPseudocompl = ⊥ := by
+  refine eq_bot_iff.2 (ClosureSubsystem.le_def.2 fun B hB ↦ ClosureSubsystem.mem_bot.2 ?_)
+  obtain ⟨T, hT, rfl⟩ := ClosureSubsystem.mem_joinPseudocompl.1 hB
+  exact sInter_eq_univ.2 fun A hA ↦ absurd (hT A hA).1.1 (hT A hA).2
+
+/-- The join-pseudocomplement of the coarsest scale-measure contains every irreducible extent,
+for instance `{0}ᶜ` in the contranominal scale. -/
+example : ({0}ᶜ : Set (Fin 3)) ∈ (⊥ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).joinPseudocompl := by
+  have hirr : ({0}ᶜ : Set (Fin 3)) ∈ (⊤ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).irreducibles := by
+    refine ⟨ClosureSubsystem.mem_top.2 (isExtent_ne _), fun h ↦ ?_⟩
+    have h0 : (0 : Fin 3) ∈ ⋂₀ {B | B ∈ (⊤ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) ∧
+        ({0}ᶜ : Set (Fin 3)) ⊂ B} := by
+      rintro B ⟨-, hB⟩
+      obtain ⟨x, hx, hx'⟩ := exists_of_ssubset hB
+      rwa [← of_not_not hx']
+    rw [h] at h0
+    exact h0 rfl
+  refine ClosureSubsystem.mem_joinPseudocompl.2 ⟨{{0}ᶜ}, ?_, sInter_singleton _⟩
+  rintro A rfl
+  refine ⟨hirr, fun h ↦ ?_⟩
+  have : (0 : Fin 3) ∈ ({0}ᶜ : Set (Fin 3)) := ClosureSubsystem.mem_bot.1 h ▸ mem_univ _
+  exact this rfl
+
 /-- Meet-distributivity: the interval above the meet of the lower covers is a powerset. -/
 example (ℬ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) :
     Nonempty (Set.Icc (ℬ ⊓ sInf {𝒜 | 𝒜 ⋖ ℬ}) ℬ ≃o Set ℬ.irreducibles) :=
