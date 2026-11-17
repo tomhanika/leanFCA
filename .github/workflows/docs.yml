@@ -17,8 +17,18 @@ concurrency:
 jobs:
   docs:
     runs-on: ubuntu-latest
+    env:
+      # Generating equation lemmas for all dependencies exhausts the memory of the runner.
+      DISABLE_EQUATIONS: "1"
     steps:
       - uses: actions/checkout@v4
+      - name: Add swap space
+        run: |
+          sudo fallocate -l 12G /mnt/docs-swap
+          sudo chmod 600 /mnt/docs-swap
+          sudo mkswap /mnt/docs-swap
+          sudo swapon /mnt/docs-swap
+          free -h
       - uses: leanprover/lean-action@v1
       - name: Redirect the site root to the API documentation
         run: |
