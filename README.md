@@ -66,7 +66,33 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.Algorithm.ImplicationClosure` | Executable closure under a list of implications |
 | `FCA.Algorithm.CanonicalBase` | Verified computation of the canonical base |
 
-Worked examples live in `FCATest`.
+API documentation: <https://tomhanika.github.io/leanFCA/docs/>.
+
+## Learning examples
+
+`FCAExamples` is a short tutorial with easy, commented proofs on a small context of four animals
+and five traits. Read the files in this order:
+
+| File | Content |
+| --- | --- |
+| `FCAExamples.Animals` | Defining a formal context from a cross table |
+| `FCAExamples.Derivation` | The derivation operators, their basic laws, extents and intents |
+| `FCAExamples.Concepts` | Building concepts, the order of the concept lattice, object and attribute concepts |
+| `FCAExamples.Implications` | Implications that hold in a context, and entailment |
+| `FCAExamples.Computing` | Evaluating derivations, counting concepts, NextClosure and the canonical base |
+
+Further examples, used as tests, live in `FCATest`.
+
+## Using the library
+
+Add the following to the `lakefile.toml` of your project, then run `lake update FCA`:
+
+```toml
+[[require]]
+name = "FCA"
+git = "https://github.com/tomhanika/leanFCA"
+rev = "v0.1.0"
+```
 
 ## Example
 

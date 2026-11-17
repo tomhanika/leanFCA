@@ -3,7 +3,7 @@ version = "0.1.0"
 description = "Formal concept analysis in Lean 4, building on Mathlib."
 keywords = ["math", "formal-concept-analysis", "order-theory", "lattice-theory"]
 license = "Apache-2.0"
-defaultTargets = ["FCA"]
+defaultTargets = ["FCA", "FCAExamples"]
 testDriver = "FCATest"
 
 [leanOptions]
@@ -22,3 +22,6 @@ name = "FCA"
 
 [[lean_lib]]
 name = "FCATest"
+
+[[lean_lib]]
+name = "FCAExamples"
