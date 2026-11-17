@@ -47,13 +47,15 @@ classical theory of the lattice of closure systems (Caspard and Monjardet).
   extents form a chain.
 * `FCA.ClosureSubsystem.sup_eq_sup_inf_of_sup_eq_sup`: for finite contexts the lattice is
   join-semidistributive.
+* `FCA.ClosureSubsystem.isLeast_joinPseudocompl`: for finite contexts the lattice is
+  join-pseudocomplemented.
 * `FCA.ClosureSubsystem.IccCoreIso`: the lattice is meet-distributive, that is, the interval
   between a closure system and the meet of its lower covers is a powerset lattice.
 
 ## Implementation notes
 
-Only the grading, the classification of all meet-irreducible elements and
-join-semidistributivity need finiteness.
+Only the grading, the classification of all meet-irreducible elements,
+join-semidistributivity and join-pseudocomplements need finiteness.
 
 The number of meet-irreducible elements is the number of covering pairs of the *concept lattice*
 (`FCA.ClosureSubsystem.natCard_infIrred`), not of the scale-hierarchy.
@@ -547,6 +549,32 @@ theorem sup_eq_sup_inf_of_sup_eq_sup [Finite α] (h : 𝒜 ⊔ ℬ = 𝒜 ⊔ �
       exact hAC ▸ inter_mem (le_def.1 le_sup_left hA') (ih C hlt hC')
   · have hlt : D ⊂ B := (hAB ▸ inter_subset_right).ssubset_of_ne h₁
     exact hAB ▸ inter_mem (le_def.1 le_sup_left hA) (ih B hlt (le_def.1 le_sup_right hB))
+
+/-! ### Join-pseudocomplements -/
+
+/-- The *join-pseudocomplement* of a closure system `𝒜` of extents: the meet of all closure
+systems whose join with `𝒜` is the system of all extents. -/
+def joinPseudocompl (𝒜 : ClosureSubsystem r) : ClosureSubsystem r :=
+  sInf {ℬ | 𝒜 ⊔ ℬ = ⊤}
+
+/-- For a finite context, the join of a closure system of extents with its join-pseudocomplement
+is the system of all extents. -/
+theorem sup_joinPseudocompl [Finite α] (𝒜 : ClosureSubsystem r) : 𝒜 ⊔ 𝒜.joinPseudocompl = ⊤ := by
+  have hfin := toFinite {ℬ : ClosureSubsystem r | 𝒜 ⊔ ℬ = ⊤}
+  rw [joinPseudocompl, ← hfin.coe_toFinset, ← Finset.inf_id_eq_sInf]
+  refine Finset.inf_induction (p := fun ℬ ↦ 𝒜 ⊔ ℬ = ⊤) (sup_top_eq _)
+    (fun ℬ hℬ 𝒞 h𝒞 ↦ ?_) fun ℬ hℬ ↦ hfin.mem_toFinset.1 hℬ
+  rw [← sup_eq_sup_inf_of_sup_eq_sup (hℬ.trans h𝒞.symm), hℬ]
+
+/-- For a finite context the lattice of closure systems of extents is
+**join-pseudocomplemented**: `𝒜.joinPseudocompl` is the least closure system whose join with `𝒜`
+is the system of all extents. -/
+theorem joinPseudocompl_le_iff [Finite α] : 𝒜.joinPseudocompl ≤ ℬ ↔ 𝒜 ⊔ ℬ = ⊤ :=
+  ⟨fun h ↦ top_unique (𝒜.sup_joinPseudocompl ▸ sup_le_sup_left h 𝒜), fun h ↦ sInf_le h⟩
+
+theorem isLeast_joinPseudocompl [Finite α] (𝒜 : ClosureSubsystem r) :
+    IsLeast {ℬ | 𝒜 ⊔ ℬ = ⊤} 𝒜.joinPseudocompl :=
+  ⟨𝒜.sup_joinPseudocompl, fun _ h ↦ joinPseudocompl_le_iff.2 h⟩
 
 /-! ### Meet-distributivity -/
 

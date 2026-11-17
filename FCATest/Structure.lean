@@ -100,6 +100,11 @@ example (𝒜 ℬ 𝒞 : ClosureSubsystem (α := Fin 3) (· ≠ ·)) (h : 𝒜 �
     𝒜 ⊔ ℬ = 𝒜 ⊔ ℬ ⊓ 𝒞 :=
   ClosureSubsystem.sup_eq_sup_inf_of_sup_eq_sup h
 
+/-- Join-pseudocomplements: there is a least scale-measure whose join with a given one is the
+finest scale-measure. -/
+example (𝒜 ℬ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) : 𝒜.joinPseudocompl ≤ ℬ ↔ 𝒜 ⊔ ℬ = ⊤ :=
+  ClosureSubsystem.joinPseudocompl_le_iff
+
 /-- Meet-distributivity: the interval above the meet of the lower covers is a powerset. -/
 example (ℬ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) :
     Nonempty (Set.Icc (ℬ ⊓ sInf {𝒜 | 𝒜 ⋖ ℬ}) ℬ ≃o Set ℬ.irreducibles) :=

@@ -53,7 +53,7 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.ScaleMeasure.Hierarchy` | The scale-hierarchy is isomorphic to the complete lattice of closure systems of extents; canonical representation; meet and join |
 | `FCA.ScaleMeasure.Logical` | Logical attributes and the conjunctive normal form of scale-measures |
 | `FCA.ScaleMeasure.Dimension` | Ferrers and order dimension bounds for scale-measures |
-| `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, meet-distributivity |
+| `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, join-pseudocomplements, meet-distributivity |
 | `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |
