@@ -27,6 +27,8 @@ public import FCA.Morphism.Bond
 public import FCA.Morphism.Infomorphism
 public import FCA.Order.ClosureSubsystem
 public import FCA.Order.ClosureSubsystem.Counterexample
+public import FCA.Order.ClosureSubsystem.Ladder
+public import FCA.Order.ClosureSubsystem.Nominal
 public import FCA.Order.ClosureSubsystem.Ordinal
 public import FCA.Order.ClosureSubsystem.Reconstruction
 public import FCA.Order.ClosureSubsystem.Structure

@@ -290,6 +290,38 @@ example (r : ℕ → Fin 3 → Prop) : IsJoinPseudocomplemented (ClosureSubsyste
 example : ¬IsJoinSemidistrib (ClosureSubsystem fun _ : Set (Option ℕ) ↦ True) :=
   ClosureSubsystem.not_isJoinSemidistrib_option_nat
 
+/-! ### Ladders -/
+
+/-- The lattice of all closure systems on `ℕ` is not join-semidistributive. -/
+example : ¬IsJoinSemidistrib (ClosureSubsystem fun _ : Set ℕ ↦ True) :=
+  ClosureSubsystem.not_isJoinSemidistrib_of_infinite ℕ
+
+/-- A closure system without ladder has a join-semidistributive lattice of closure subsystems. -/
+example {p : Set ℕ → Prop} [IsClosureSystem p] (h : ¬∃ X A, IsLadder p X A) :
+    IsJoinSemidistrib (ClosureSubsystem p) :=
+  ClosureSubsystem.isJoinSemidistrib_iff_not_isLadder.2 h
+
+/-- No ladder with finitely many attributes. -/
+example (r : ℕ → Fin 3 → Prop) {X A : ℕ → Set ℕ} : ¬IsLadder (IsExtent r) X A :=
+  fun h ↦ h.not_isNoetherianClosureSystem inferInstance
+
+/-! ### Nominal covers -/
+
+/-- The powerset of a four-element set is a join of four nominal closure systems … -/
+example : (⊤ : ClosureSubsystem fun _ : Set (Fin 4) ↦ True).HasNominalCover (Fin 4) :=
+  ClosureSubsystem.hasNominalCover_top_powerset
+
+/-- … and not of three. -/
+example (h : (⊤ : ClosureSubsystem fun _ : Set (Fin 4) ↦ True).HasNominalCover (Fin 3)) :
+    False := by
+  simpa using ClosureSubsystem.card_le_of_hasNominalCover_top_powerset (by simp) h
+
+/-- Nominal covers of the closure system of a graph are proper edge colourings. -/
+example (G : SimpleGraph (Fin 5)) :
+    (ClosureSubsystem.edgeSystem G).HasNominalCover (Fin 3) ↔
+      Nonempty (G.lineGraph.Coloring (Fin 3)) :=
+  ClosureSubsystem.hasNominalCover_edgeSystem_iff (by simp)
+
 /-! ### Ordinal covers are not monotone -/
 
 /-- The sets with at most two elements of a four-element set need six chains … -/
