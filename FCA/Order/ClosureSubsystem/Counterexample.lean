@@ -32,6 +32,22 @@ meet in the least closure system, whose join with `𝒜` is just `𝒜`.
 * `FCA.ClosureSubsystem.not_isJoinPseudocomplemented_noneOrFinite`: the lattice of closure
   subsystems of the closure system of the sets which contain `none` or are finite is not
   join-pseudocomplemented.
+
+## Relation to the literature
+
+A closure operator without pseudocomplement on a complete lattice, built in the same way, is due
+to Giacobazzi, Palamidessi and Ranzato; they also show that the lattice of all closure systems on
+a set is join-pseudocomplemented, so that the failure of join-pseudocomplements needs a proper
+closure subsystem of the powerset. Ronse uses the even and the odd numbers in the same way for
+closure systems on a poset which is not a complete lattice, and asks when the lattice of closure
+systems is join-semidistributive or join-pseudocomplemented.
+
+## References
+
+* [R. Giacobazzi, C. Palamidessi, F. Ranzato, *Weak relative pseudo-complements of closure
+  operators*][giacobazzi1996]
+* [C. Ronse, *The poset of closure systems on an infinite poset: detachability and
+  semimodularity*][ronse2010]
 -/
 
 @[expose] public section

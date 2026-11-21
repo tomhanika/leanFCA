@@ -14,13 +14,13 @@ For a closure system `p` on a finite type, the lattice `ClosureSubsystem p` of c
 contained in `p` does not determine the lattice of closed sets of `p`. This file describes exactly
 what it does determine: two such lattices are isomorphic if and only if there is a bijection
 between the closed sets other than the whole set that preserves comparability and the
-intersections of incomparable sets. The question of when two complete lattices have isomorphic
-lattices of closure operators was treated by Morgado under the name of quasi-isomorphism; the
-statement here is a formulation for closure systems on finite types.
+intersections of incomparable sets. This is due to Morgado, who calls such bijections
+quasi-isomorphisms and treats complete lattices, and independently to Shevrin, in the form of a
+description of the semilattices with isomorphic lattices of subsemilattices.
 
 If every closed set of `p` is an intersection of maximal proper closed sets, such a bijection is
 an order isomorphism, so that the lattice of closure subsystems determines the lattice of closed
-sets.
+sets. This is also due to Morgado, for all complete lattices.
 
 ## Main definitions
 
@@ -48,6 +48,9 @@ sets.
 ## References
 
 * [J. Morgado, *Quasi-isomorphisms between complete lattices*][morgado1961]
+* [J. Morgado, *Some remarks on quasi-isomorphisms between finite lattices*][morgado1961b]
+* [L. N. Shevrin, *Fundamental questions in the theory of projectivities of
+  semilattices*][shevrin1965]
 -/
 
 @[expose] public section

@@ -46,6 +46,8 @@ dimension (`FCA.HasRealizer`) we do not define a numeric dimension but the predi
 
 * [B. Ganter, T. Hanika, J. Hirth, *Scaling Dimension*][ganter2023]
 * [T. Hanika, J. Hirth, *On the Lattice of Conceptual Measurements*][hanika2022]
+* [P. H. Edelman, M. E. Saks, *Combinatorial representation and convex dimension of convex
+  geometries*][edelman1988]
 -/
 
 @[expose] public section

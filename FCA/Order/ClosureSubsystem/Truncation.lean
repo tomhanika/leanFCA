@@ -34,6 +34,11 @@ in contrast to the order dimension.
   dimension at most `|α|`.
 * `FCA.ClosureSubsystem.exists_le_hasOrdinalCover_not_hasOrdinalCover`: there are closure systems
   `𝒜 ≤ ℬ` such that `ℬ` is covered by four ordinal closure systems and `𝒜` is not.
+
+## References
+
+* [K. Knauer, W. T. Trotter, *Concepts of Dimension for Convex Geometries*][knauer2023]
+* [T. Hanika, J. Hirth, *On the Lattice of Conceptual Measurements*][hanika2022]
 -/
 
 @[expose] public section

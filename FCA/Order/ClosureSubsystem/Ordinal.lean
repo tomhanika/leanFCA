@@ -29,10 +29,18 @@ ordinal closure systems are needed to generate a given closure system `𝒜`, in
   join of `ι` ordinal closure systems iff the `⋂`-irreducible closed sets of `𝒜` can be covered
   by `ι` chains. The implication from left to right needs no finiteness.
 
+For convex geometries, a join of chains is a convex realizer in the sense of Edelman and Saks,
+and the least number of chains needed is the convex dimension; the characterisation by chain
+covers of the irreducible closed sets is theirs in that case, and due to Adaricheva and Pouzet
+for algebraic closure systems.
+
 ## References
 
 * [N. Caspard, B. Monjardet, *The lattices of closure systems, closure operators, and
   implicational systems on a finite set: a survey*][caspard2003]
+* [P. H. Edelman, M. E. Saks, *Combinatorial representation and convex dimension of convex
+  geometries*][edelman1988]
+* [K. Adaricheva, M. Pouzet, *On scattered convex geometries*][adaricheva2015]
 -/
 
 @[expose] public section

@@ -67,10 +67,18 @@ Join-semidistributivity and join-pseudocomplements need the ascending chain cond
 `FCA.IsNoetherianClosureSystem` on the closed sets; `FCA.Order.ClosureSubsystem.Counterexample`
 shows that they fail without it.
 
+In the dual language of closure operators on a complete lattice, the results under the ascending
+chain condition are known: the existence of join-pseudocomplements and their description by
+irreducible closed sets is due to Ranzato, and join-semidistributivity follows from the weak
+relative pseudocomplements of Giacobazzi, Palamidessi and Ranzato.
+
 ## References
 
 * [N. Caspard, B. Monjardet, *The lattices of closure systems, closure operators, and
   implicational systems on a finite set: a survey*][caspard2003]
+* [R. Giacobazzi, C. Palamidessi, F. Ranzato, *Weak relative pseudo-complements of closure
+  operators*][giacobazzi1996]
+* [F. Ranzato, *Pseudocomplements of closure operators on posets*][ranzato2002]
 -/
 
 @[expose] public section
