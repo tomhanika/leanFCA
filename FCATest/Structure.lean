@@ -135,6 +135,50 @@ example (ℬ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) :
     Nonempty (Set.Icc (ℬ ⊓ sInf {𝒜 | 𝒜 ⋖ ℬ}) ℬ ≃o Set ℬ.irreducibles) :=
   ℬ.core_eq_inf_sInf_covBy ▸ ⟨ℬ.IccCoreIso⟩
 
+/-! ### General lattice properties -/
+
+example : IsJoinSemidistrib (ClosureSubsystem (α := Fin 3) (· ≠ ·)) := inferInstance
+
+example : IsJoinPseudocomplemented (ClosureSubsystem (α := Fin 3) (· ≠ ·)) := inferInstance
+
+example : IsMeetDistrib (ClosureSubsystem (α := ℕ) (· ≤ ·)) := inferInstance
+
+/-- A distributive lattice is join- and meet-semidistributive. -/
+example : IsJoinSemidistrib (Set ℕ) ∧ IsMeetSemidistrib (Set ℕ) := ⟨inferInstance, inferInstance⟩
+
+/-- In a Boolean algebra the complement is both pseudocomplements. -/
+example (s : Set ℕ) : IsMeetPseudocompl s sᶜ ∧ IsJoinPseudocompl s sᶜ :=
+  ⟨isMeetPseudocompl_compl s, by rw [← hnot_eq_compl]; exact isJoinPseudocompl_hnot s⟩
+
+/-- Finite chains are join-pseudocomplemented, as finite join-semidistributive lattices. -/
+example : IsJoinPseudocomplemented (Fin 4) := isJoinPseudocomplemented_of_finite
+
+/-! ### Structural properties of concept lattices -/
+
+/-- In the contranominal scale every set is an extent, so extents are closed under unions and
+the concept lattice is distributive. -/
+example (c d e : Concept ℕ ℕ (· ≠ ·)) : (c ⊔ d) ⊓ (c ⊔ e) ≤ c ⊔ d ⊓ e :=
+  Concept.sup_inf_le_of_isExtent_union (fun _ _ _ _ ↦ isExtent_ne _) c d e
+
+/-- For a finite context, meet-semidistributivity says that every object has at most one double
+arrow, up to attributes with the same extent. -/
+example (r : Fin 5 → Fin 5 → Prop) : IsMeetSemidistrib (Concept _ _ r) ↔
+    ∀ a b b', DoubleArrow r a b → DoubleArrow r a b' → lowerPolar r {b} = lowerPolar r {b'} :=
+  isMeetSemidistrib_iff_doubleArrow (.of_finite_objects r) (.of_finite_objects r)
+
+/-! ### Representability in fragments of propositional logic -/
+
+/-- Every scale-measure of a context with finitely many attributes is representable by
+conjunctions. -/
+example (𝒜 : ClosureSubsystem (α := Fin 3) (β := Fin 3) (· ≠ ·)) :
+    𝒜.IsRepresentable {φ | φ.IsConjunctive} :=
+  𝒜.isRepresentable_isConjunctive
+
+/-- Disjunctions do not suffice. -/
+example : ¬(ClosureSubsystem.pair ({0} : Set (Fin 3)) isExtent_fork_singleton).IsRepresentable
+    {φ | φ.IsDisjunctive} :=
+  not_isRepresentable_isDisjunctive_fork
+
 /-! ### The scale-hierarchy does not determine the concept lattice -/
 
 example : ∃ r₁ r₂ : Option Bool → Option Bool → Prop,

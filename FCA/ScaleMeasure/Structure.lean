@@ -6,6 +6,7 @@ Authors: Tom Hanika
 module
 
 public import FCA.ClosureSystem
+public import FCA.Order.Semidistributive
 public import FCA.ScaleMeasure.Hierarchy
 public import Mathlib.Data.Set.Card
 public import Mathlib.Order.Atoms
@@ -54,6 +55,9 @@ classical theory of the lattice of closure systems (Caspard and Monjardet).
   (`FCA.ClosureSubsystem.joinPseudocompl_eq_generate`).
 * `FCA.ClosureSubsystem.IccCoreIso`: the lattice is meet-distributive, that is, the interval
   between a closure system and the meet of its lower covers is a powerset lattice.
+
+The lattice is an instance of the general classes `FCA.IsJoinSemidistrib`,
+`FCA.IsJoinPseudocomplemented` (both for finite contexts) and `FCA.IsMeetDistrib`.
 
 ## Implementation notes
 
@@ -749,6 +753,24 @@ theorem mem_joinPseudocompl [Finite α] :
   rw [joinPseudocompl_eq_generate, mem_generate]
   exact ⟨fun ⟨T, hT, _, h⟩ ↦ ⟨T, fun A hA ↦ hT hA, h⟩,
     fun ⟨T, hT, h⟩ ↦ ⟨T, fun A hA ↦ hT A hA, fun A hA ↦ mem_top.1 (hT A hA).1.1, h⟩⟩
+
+/-! ### Instances of the general lattice properties -/
+
+instance [Finite α] : IsJoinSemidistrib (ClosureSubsystem r) :=
+  ⟨fun _ _ _ h ↦ sup_eq_sup_inf_of_sup_eq_sup h⟩
+
+theorem isJoinPseudocompl_joinPseudocompl [Finite α] (𝒜 : ClosureSubsystem r) :
+    IsJoinPseudocompl 𝒜 𝒜.joinPseudocompl :=
+  𝒜.isLeast_joinPseudocompl
+
+instance [Finite α] : IsJoinPseudocomplemented (ClosureSubsystem r) :=
+  ⟨fun 𝒜 ↦ ⟨𝒜.joinPseudocompl, 𝒜.isJoinPseudocompl_joinPseudocompl⟩⟩
+
+theorem lowerCore_eq_core (ℬ : ClosureSubsystem r) : lowerCore ℬ = ℬ.core :=
+  ℬ.core_eq_inf_sInf_covBy.symm
+
+instance : IsMeetDistrib (ClosureSubsystem r) :=
+  .of_orderIso fun ℬ ↦ ⟨ℬ.irreducibles, by rw [lowerCore_eq_core]; exact ⟨ℬ.IccCoreIso⟩⟩
 
 end ClosureSubsystem
 

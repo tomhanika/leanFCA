@@ -29,6 +29,8 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.Concept.Dense` | Object concepts are supremum-dense, attribute concepts infimum-dense |
 | `FCA.Concept.BasicTheorem` | The basic theorem on concept lattices |
 | `FCA.Concept.Dimension` | The order dimension of a concept lattice equals the Ferrers dimension of its context; order dimension of powersets |
+| `FCA.Concept.Distributive` | Distributivity, semidistributivity and semimodularity of concept lattices in terms of the arrow relations |
+| `FCA.Order.Semidistributive` | Semidistributive, pseudocomplemented and meet-distributive lattices |
 | `FCA.Order.Dimension` | Realizers and the order dimension of a partial order |
 | `FCA.ClosureSystem` | Extents and intents as closure systems; every closure operator is the intent closure of a context |
 | **Structure of contexts** | |
@@ -54,6 +56,7 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.ScaleMeasure.Logical` | Logical attributes and the conjunctive normal form of scale-measures |
 | `FCA.ScaleMeasure.Dimension` | Ferrers and order dimension bounds for scale-measures |
 | `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, join-pseudocomplements and their explicit description, meet-distributivity |
+| `FCA.ScaleMeasure.Fragment` | Which scale-measures are representable in a fragment of propositional logic, e.g. by disjunctions only |
 | `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |
@@ -114,7 +117,7 @@ abbrev divides (a b : Fin 4) : Prop := a.val ∣ b.val
 * Attribute exploration
 * Concept lattices of disjoint unions (horizontal sums) and of direct products
 * Compatible subcontexts and complete congruences; tolerance relations
-* Structural properties of concept lattices (distributivity, modularity)
+* A characterisation of modular concept lattices; distributive concept lattices as contraordinal scales
 * Proper premises; an infinitary Armstrong calculus
 
 ## Building

@@ -9,6 +9,7 @@ public import FCA.ClosureSystem
 public import FCA.Concept.BasicTheorem
 public import FCA.Concept.Dense
 public import FCA.Concept.Dimension
+public import FCA.Concept.Distributive
 public import FCA.Context.Arrows
 public import FCA.Context.Clarified
 public import FCA.Context.Constructions
@@ -25,9 +26,11 @@ public import FCA.ManyValued.Basic
 public import FCA.Morphism.Bond
 public import FCA.Morphism.Infomorphism
 public import FCA.Order.Dimension
+public import FCA.Order.Semidistributive
 public import FCA.Scale.Standard
 public import FCA.ScaleMeasure.Basic
 public import FCA.ScaleMeasure.Dimension
+public import FCA.ScaleMeasure.Fragment
 public import FCA.ScaleMeasure.Hierarchy
 public import FCA.ScaleMeasure.Logical
 public import FCA.ScaleMeasure.Reconstruction
