@@ -7,6 +7,7 @@ module
 
 public import FCA.Scale.Standard
 public import FCA.ScaleMeasure.Hierarchy
+public import FCA.Order.ClosureSubsystem.Reconstruction
 
 /-!
 # The scale-hierarchy does not determine the concept lattice
@@ -15,6 +16,13 @@ The scale-hierarchy of a context depends only on its concept lattice. The conver
 adjoining a new greatest element to a concept lattice and adjoining a new least element yield
 isomorphic scale-hierarchies, since in both cases exactly one closed set can be added or removed
 freely. For the four-element Boolean lattice the two extended lattices are not isomorphic.
+
+What the scale-hierarchy does determine is described in
+`FCA.Order.ClosureSubsystem.Reconstruction`: the proper extents up to bijections preserving
+comparability and intersections of incomparable extents. The example above is an instance,
+since a new greatest and a new least proper extent are both comparable to every other extent.
+For coatomistic concept lattices of contexts with finitely many objects this invariant is the
+concept lattice itself.
 
 ## Main definitions
 
@@ -30,6 +38,9 @@ freely. For the four-element Boolean lattice the two extended lattices are not i
   scale-hierarchies.
 * `FCA.exists_scaleHierarchy_orderIso_and_isEmpty_concept_orderIso`: there are two contexts on
   three objects with isomorphic scale-hierarchies and non-isomorphic concept lattices.
+* `FCA.nonempty_concept_orderIso_of_scaleHierarchy_orderIso`: if the concept lattice of a
+  context with finitely many objects is coatomistic, every context with an isomorphic
+  scale-hierarchy has an isomorphic concept lattice.
 
 ## References
 
@@ -370,5 +381,53 @@ theorem exists_scaleHierarchy_orderIso_and_isEmpty_concept_orderIso :
   ⟨_, _, ⟨(scaleHierarchyIso _).symm.trans <|
     (ClosureSubsystem.adjoinTopAdjoinBotIso _).trans (scaleHierarchyIso _)⟩,
     isEmpty_concept_adjoinTop_orderIso_adjoinBot⟩
+
+/-! ### Reconstruction for coatomistic concept lattices -/
+
+section Coatomistic
+
+variable {γ δ : Type*} {s : γ → δ → Prop}
+
+/-- In a coatomistic concept lattice every extent is an intersection of maximal proper
+extents. -/
+theorem isClosedCoatomistic_isExtent [IsCoatomistic (Concept α β r)] :
+    IsClosedCoatomistic (IsExtent r) := by
+  intro A hA
+  obtain ⟨S, hS, hS'⟩ := IsCoatomistic.isGLB_coatoms (Concept.ofIsExtent r A hA)
+  refine ⟨Concept.extent '' S, ?_, ?_⟩
+  · rintro _ ⟨d, hd, rfl⟩
+    have hd' := hS' d hd
+    refine ⟨d.isExtent_extent, fun h ↦ hd'.1 ?_, fun D hD hdD ↦ ?_⟩
+    · exact Concept.extent_injective (h.trans Concept.extent_top.symm)
+    · have hle : d ≤ Concept.ofIsExtent r D hD := Concept.extent_subset_extent_iff.1 hdD
+      rcases eq_or_lt_of_le hle with h | h
+      · exact .inl (congrArg Concept.extent h).symm
+      · exact .inr ((congrArg Concept.extent (hd'.2 _ h)).trans Concept.extent_top)
+  · have h := congrArg Concept.extent hS.sInf_eq
+    rw [Concept.extent_sInf] at h
+    rw [sInter_image]
+    exact h
+
+/-- **Reconstruction for coatomistic concept lattices.** If the concept lattice of a context
+with finitely many objects is coatomistic, then it is determined by the lattice of closure
+systems of extents: every context with an isomorphic lattice of closure systems of extents has
+an isomorphic concept lattice. -/
+theorem nonempty_concept_orderIso_of_closureSubsystem_orderIso [Finite α]
+    [IsCoatomistic (Concept α β r)]
+    (e : ClosureSubsystem (IsExtent r) ≃o ClosureSubsystem (IsExtent s)) :
+    Nonempty (Concept α β r ≃o Concept γ δ s) :=
+  let ⟨f⟩ := ClosureSubsystem.nonempty_closed_orderIso isClosedCoatomistic_isExtent e
+  ⟨(Concept.extentOrderIso r).trans (f.trans (Concept.extentOrderIso s).symm)⟩
+
+/-- **The scale-hierarchy determines coatomistic concept lattices.** If the concept lattice of
+a context with finitely many objects is coatomistic, then every context with an isomorphic
+scale-hierarchy has an isomorphic concept lattice. -/
+theorem nonempty_concept_orderIso_of_scaleHierarchy_orderIso [Finite α]
+    [IsCoatomistic (Concept α β r)] (e : ScaleHierarchy r ≃o ScaleHierarchy s) :
+    Nonempty (Concept α β r ≃o Concept γ δ s) :=
+  nonempty_concept_orderIso_of_closureSubsystem_orderIso
+    ((scaleHierarchyIso r).trans (e.trans (scaleHierarchyIso s).symm))
+
+end Coatomistic
 
 end FCA

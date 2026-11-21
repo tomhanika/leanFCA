@@ -229,6 +229,64 @@ example : ∃ r₁ r₂ : Option Bool → Option Bool → Prop,
       IsEmpty (Concept _ _ r₁ ≃o Concept _ _ r₂) :=
   exists_scaleHierarchy_orderIso_and_isEmpty_concept_orderIso
 
+/-! ### What the scale-hierarchy remembers -/
+
+/-- Isomorphic lattices of closure subsystems yield a bijection of proper closed sets that
+preserves comparability and intersections of incomparable sets, and conversely. -/
+example {p : Set (Fin 3) → Prop} {q : Set (Fin 4) → Prop} [IsClosureSystem p]
+    [IsClosureSystem q] :
+    Nonempty (ClosureSubsystem p ≃o ClosureSubsystem q) ↔
+      ∃ φ : ProperClosed p ≃ ProperClosed q, IsInterEquiv φ :=
+  ClosureSubsystem.nonempty_orderIso_iff
+
+/-- The identity is such a bijection, and induces the identity. -/
+example (p : Set (Fin 3) → Prop) [IsClosureSystem p] (𝒜 : ClosureSubsystem p) :
+    ∃ h : IsInterEquiv (Equiv.refl (ProperClosed p)),
+      ClosureSubsystem.orderIsoOfInterEquiv _ h 𝒜 = 𝒜 := by
+  refine ⟨⟨fun _ _ ↦ Iff.rfl, fun _ _ _ _ _ h ↦ h⟩, ?_⟩
+  refine ClosureSubsystem.ext (Set.ext fun A ↦ ⟨?_, fun hA ↦ ?_⟩)
+  · rintro (rfl | ⟨B, hB, rfl⟩)
+    exacts [𝒜.univ_mem, hB]
+  · by_cases hu : A = univ
+    · exact .inl hu
+    · exact .inr ⟨⟨A, 𝒜.isClosed hA, hu⟩, hA, rfl⟩
+
+/-- In the powerset of a finite type every set is an intersection of complements of
+singletons, so the lattice of all closure systems on it determines the powerset. -/
+example {q : Set (Fin 5) → Prop} [IsClosureSystem q]
+    (e : ClosureSubsystem (fun _ : Set (Fin 3) ↦ True) ≃o ClosureSubsystem q) :
+    Nonempty ({_A : Set (Fin 3) // True} ≃o {B // q B}) := by
+  refine ClosureSubsystem.nonempty_closed_orderIso (fun A _ ↦ ?_) e
+  refine ⟨(fun a ↦ ({a}ᶜ : Set (Fin 3))) '' Aᶜ, ?_, ?_⟩
+  · rintro _ ⟨a, -, rfl⟩
+    refine ⟨trivial, fun h ↦ by simpa using congrArg (a ∈ ·) h, fun D _ hD ↦ ?_⟩
+    by_cases ha : a ∈ D
+    · refine .inr (eq_univ_of_forall fun x ↦ ?_)
+      by_cases hx : x = a
+      · exact hx ▸ ha
+      · exact hD hx
+    · exact .inl (Subset.antisymm (fun x hx hxa ↦ ha (mem_singleton_iff.1 hxa ▸ hx)) hD)
+  · ext x
+    simp only [sInter_image, mem_iInter, mem_compl_iff, mem_singleton_iff]
+    exact ⟨fun h ↦ by_contra fun hx ↦ h x hx rfl, fun hx a ha hxa ↦ ha (hxa ▸ hx)⟩
+
+/-- A context with a coatomistic concept lattice is determined by its scale-hierarchy. -/
+example {r : Fin 3 → Fin 3 → Prop} [IsCoatomistic (Concept (Fin 3) (Fin 3) r)]
+    {s : Fin 4 → Fin 2 → Prop} (e : ScaleHierarchy r ≃o ScaleHierarchy s) :
+    Nonempty (Concept (Fin 3) (Fin 3) r ≃o Concept (Fin 4) (Fin 2) s) :=
+  nonempty_concept_orderIso_of_scaleHierarchy_orderIso e
+
+/-! ### Ordinal covers are not monotone -/
+
+/-- The sets with at most two elements of a four-element set need six chains … -/
+example (h : (ClosureSubsystem.truncation (Fin 4) 2).HasOrdinalCover (Fin 5)) : False := by
+  have := ClosureSubsystem.choose_le_card_of_hasOrdinalCover_truncation (k := 2) (by simp) h
+  simp [Nat.choose] at this
+
+/-- … whereas the whole powerset needs only four. -/
+example : (⊤ : ClosureSubsystem fun _ : Set (Fin 4) ↦ True).HasOrdinalCover (Fin 4) :=
+  ClosureSubsystem.hasOrdinalCover_top_powerset
+
 /-! ### Order dimension -/
 
 /-- The powerset of a three-element set has order dimension at most three … -/

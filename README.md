@@ -37,6 +37,8 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.Order.ClosureSubsystem` | The complete lattice of closure systems contained in a closure system; meet, join, closure, generated closure systems |
 | `FCA.Order.ClosureSubsystem.Structure` | Its structure: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, join-pseudocomplements and their explicit description, meet-distributivity |
 | `FCA.Order.ClosureSubsystem.Ordinal` | Covers of a closure system by chains of closed sets |
+| `FCA.Order.ClosureSubsystem.Reconstruction` | When two closure systems have isomorphic lattices of closure subsystems; coatomistic closure systems are determined by that lattice |
+| `FCA.Order.ClosureSubsystem.Truncation` | Truncated powersets; the ordinal scaling dimension is not monotone in the lattice of closure systems |
 | **Structure of contexts** | |
 | `FCA.Context.Constructions` | Complement, apposition, subposition, subcontexts, disjoint union, direct sum |
 | `FCA.Context.Clarified` | Clarified contexts; clarification preserves the concept lattice |
@@ -62,7 +64,7 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.ScaleMeasure.Structure` | Meet-irreducible elements of the scale-hierarchy and the covering pairs of the concept lattice; the general structure theory is in `FCA.Order.ClosureSubsystem.Structure` |
 | `FCA.ScaleMeasure.Fragment` | Which scale-measures are representable in a fragment of propositional logic, e.g. by disjunctions only |
 | `FCA.ScaleMeasure.ScalingDimension` | Scaling dimension inside the scale-hierarchy; the ordinal scaling dimension bounds the order dimension |
-| `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice |
+| `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice in general, but does determine coatomistic concept lattices |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |
 | `FCA.Morphism.Infomorphism` | Infomorphisms and context isomorphisms |
