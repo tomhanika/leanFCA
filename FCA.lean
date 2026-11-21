@@ -25,6 +25,9 @@ public import FCA.Implication.PseudoClosed
 public import FCA.ManyValued.Basic
 public import FCA.Morphism.Bond
 public import FCA.Morphism.Infomorphism
+public import FCA.Order.ClosureSubsystem
+public import FCA.Order.ClosureSubsystem.Ordinal
+public import FCA.Order.ClosureSubsystem.Structure
 public import FCA.Order.Dimension
 public import FCA.Order.Semidistributive
 public import FCA.Scale.Standard

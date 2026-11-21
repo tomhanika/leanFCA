@@ -5,6 +5,7 @@ Authors: Tom Hanika
 -/
 module
 
+public import FCA.Order.ClosureSubsystem
 public import FCA.ScaleMeasure.Basic
 public import Mathlib.Order.Antisymmetrization
 public import Mathlib.Order.CompleteLattice.Basic
@@ -19,8 +20,9 @@ closure systems contained in the system of extents of `r`.
 
 ## Main definitions
 
-* `FCA.ClosureSubsystem r`: the closure systems on the objects consisting of extents of `r`,
-  a complete lattice under inclusion.
+* `FCA.ClosureSubsystem (IsExtent r)`: the closure systems on the objects consisting of
+  extents of `r`, a complete lattice under inclusion. The general theory of
+  `FCA.ClosureSubsystem p` for a closure system `p` lives in `FCA.Order.ClosureSubsystem`.
 * `FCA.ClosureSubsystem.context`: the canonical scale context `(G, 𝒜, ∈)` of a closure system.
 * `FCA.IsScaleMeasure.closureSubsystem`: the closure system of extents reflected by a
   scale-measure.
@@ -65,157 +67,26 @@ variable {α : Type u} {β : Type v} {γ δ ε ζ : Type*} {r : α → β → Pr
 
 /-! ### Closure systems of extents -/
 
-/-- A closure system on the objects of the context `r` all of whose members are extents of
-`r`. -/
-@[ext]
-structure ClosureSubsystem (r : α → β → Prop) where
-  /-- The closed sets of the closure system. -/
-  carrier : Set (Set α)
-  /-- A closure system is closed under arbitrary intersections. -/
-  sInter_mem' : ∀ ⦃S : Set (Set α)⦄, S ⊆ carrier → ⋂₀ S ∈ carrier
-  /-- All closed sets are extents. -/
-  isExtent' : ∀ ⦃A : Set α⦄, A ∈ carrier → IsExtent r A
+/-- The extents of a context form a closure system. -/
+instance : IsClosureSystem (IsExtent r) :=
+  ⟨fun _ hS ↦ .sInter hS⟩
 
 namespace ClosureSubsystem
 
-variable {𝒜 ℬ : ClosureSubsystem r} {A B : Set α}
-
-instance : Membership (Set α) (ClosureSubsystem r) :=
-  ⟨fun 𝒜 A ↦ A ∈ 𝒜.carrier⟩
-
-@[simp]
-theorem mem_carrier : A ∈ 𝒜.carrier ↔ A ∈ 𝒜 :=
-  Iff.rfl
-
-@[simp]
-theorem mem_mk {C : Set (Set α)} {h₁ h₂} : A ∈ (⟨C, h₁, h₂⟩ : ClosureSubsystem r) ↔ A ∈ C :=
-  Iff.rfl
-
-theorem carrier_injective : Injective (carrier : ClosureSubsystem r → Set (Set α)) :=
-  fun _ _ ↦ ClosureSubsystem.ext
-
-instance : PartialOrder (ClosureSubsystem r) :=
-  .lift carrier carrier_injective
-
-theorem le_def : 𝒜 ≤ ℬ ↔ ∀ ⦃A⦄, A ∈ 𝒜 → A ∈ ℬ :=
-  Iff.rfl
-
-theorem sInter_mem {S : Set (Set α)} (hS : ∀ A ∈ S, A ∈ 𝒜) : ⋂₀ S ∈ 𝒜 :=
-  𝒜.sInter_mem' hS
-
-theorem isExtent (hA : A ∈ 𝒜) : IsExtent r A :=
-  𝒜.isExtent' hA
-
-theorem univ_mem (𝒜 : ClosureSubsystem r) : univ ∈ 𝒜 := by
-  simpa using 𝒜.sInter_mem (S := ∅) (by simp)
-
-theorem inter_mem (hA : A ∈ 𝒜) (hB : B ∈ 𝒜) : A ∩ B ∈ 𝒜 := by
-  simpa using 𝒜.sInter_mem (S := {A, B}) (by simp [hA, hB])
+theorem isExtent {𝒜 : ClosureSubsystem (IsExtent r)} {A : Set α} (hA : A ∈ 𝒜) : IsExtent r A :=
+  𝒜.isClosed hA
 
 /-- The closure system of all extents of a context. -/
-def extents (r : α → β → Prop) : ClosureSubsystem r where
-  carrier := {A | IsExtent r A}
-  sInter_mem' _ hS := .sInter hS
-  isExtent' _ hA := hA
+abbrev extents (r : α → β → Prop) : ClosureSubsystem (IsExtent r) :=
+  closeds (IsExtent r)
 
-/-- The closure system consisting only of the whole object set. -/
-def trivial (r : α → β → Prop) : ClosureSubsystem r where
-  carrier := {univ}
-  sInter_mem' S hS := by
-    rw [mem_singleton_iff, sInter_eq_univ]
-    exact fun A hA ↦ hS hA
-  isExtent' := by
-    rintro _ rfl
-    exact .univ
-
-instance : InfSet (ClosureSubsystem r) where
-  sInf 𝒮 :=
-    { carrier := {A | IsExtent r A ∧ ∀ 𝒜 ∈ 𝒮, A ∈ 𝒜}
-      sInter_mem' := fun _ hS ↦
-        ⟨.sInter fun _ hA ↦ (hS hA).1, fun 𝒜 h𝒜 ↦ 𝒜.sInter_mem fun _ hA ↦ (hS hA).2 𝒜 h𝒜⟩
-      isExtent' := fun _ hA ↦ hA.1 }
-
-theorem mem_sInf {𝒮 : Set (ClosureSubsystem r)} :
-    A ∈ sInf 𝒮 ↔ IsExtent r A ∧ ∀ 𝒜 ∈ 𝒮, A ∈ 𝒜 :=
-  Iff.rfl
-
-/-- The closure systems of extents of a context form a complete lattice under inclusion. -/
-instance : CompleteLattice (ClosureSubsystem r) :=
-  completeLatticeOfInf _ fun _ ↦
-    ⟨fun _ h𝒜 ↦ le_def.2 fun _ hA ↦ (mem_sInf.1 hA).2 _ h𝒜, fun _ hℬ ↦ le_def.2 fun _ hA ↦
-      mem_sInf.2 ⟨isExtent hA, fun _ h𝒜 ↦ le_def.1 (hℬ h𝒜) hA⟩⟩
-
-@[simp]
-theorem mem_top : A ∈ (⊤ : ClosureSubsystem r) ↔ IsExtent r A :=
-  ⟨isExtent, fun hA ↦ le_top (a := extents r) hA⟩
-
-theorem top_eq : (⊤ : ClosureSubsystem r) = extents r :=
-  ClosureSubsystem.ext (Set.ext fun _ ↦ mem_top)
-
-@[simp]
-theorem mem_bot : A ∈ (⊥ : ClosureSubsystem r) ↔ A = univ :=
-  ⟨fun hA ↦ bot_le (a := trivial r) hA, fun hA ↦ hA ▸ univ_mem _⟩
-
-theorem bot_eq : (⊥ : ClosureSubsystem r) = trivial r :=
-  ClosureSubsystem.ext (Set.ext fun _ ↦ mem_bot)
-
-/-- The intersection of two closure systems. -/
-def inter (𝒜 ℬ : ClosureSubsystem r) : ClosureSubsystem r where
-  carrier := {A | A ∈ 𝒜 ∧ A ∈ ℬ}
-  sInter_mem' _ hS :=
-    ⟨𝒜.sInter_mem fun _ hA ↦ (hS hA).1, ℬ.sInter_mem fun _ hA ↦ (hS hA).2⟩
-  isExtent' _ hA := 𝒜.isExtent hA.1
-
-/-- The meet of two closure systems is their intersection. -/
-@[simp]
-theorem mem_inf : A ∈ 𝒜 ⊓ ℬ ↔ A ∈ 𝒜 ∧ A ∈ ℬ :=
-  ⟨fun hA ↦ ⟨le_def.1 inf_le_left hA, le_def.1 inf_le_right hA⟩, fun hA ↦
-    le_def.1 (le_inf (le_def.2 fun _ h ↦ h.1) (le_def.2 fun _ h ↦ h.2) : inter 𝒜 ℬ ≤ _) hA⟩
-
-/-- The closure system of all intersections of a member of `𝒜` with a member of `ℬ`. -/
-def pairwiseInter (𝒜 ℬ : ClosureSubsystem r) : ClosureSubsystem r where
-  carrier := {C | ∃ A ∈ 𝒜, ∃ B ∈ ℬ, A ∩ B = C}
-  sInter_mem' S hS := by
-    have hS' : ∀ C, C ∈ S → ∃ A, A ∈ 𝒜 ∧ ∃ B, B ∈ ℬ ∧ A ∩ B = C := fun C hC ↦ hS hC
-    choose! f hf g hg hfg using hS'
-    refine ⟨⋂₀ (f '' S), 𝒜.sInter_mem ?_, ⋂₀ (g '' S), ℬ.sInter_mem ?_, ?_⟩
-    · rintro _ ⟨C, hC, rfl⟩
-      exact hf C hC
-    · rintro _ ⟨C, hC, rfl⟩
-      exact hg C hC
-    · ext x
-      simp only [mem_inter_iff, mem_sInter, forall_mem_image]
-      refine ⟨fun h C hC ↦ ?_, fun h ↦ ⟨fun C hC ↦ ?_, fun C hC ↦ ?_⟩⟩
-      · rw [← hfg C hC]
-        exact ⟨h.1 hC, h.2 hC⟩
-      · have := h C hC
-        rw [← hfg C hC] at this
-        exact this.1
-      · have := h C hC
-        rw [← hfg C hC] at this
-        exact this.2
-  isExtent' := by
-    rintro _ ⟨A, hA, B, hB, rfl⟩
-    exact (𝒜.isExtent hA).inter (ℬ.isExtent hB)
-
-/-- The join of two closure systems consists of the pairwise intersections of their members. -/
-theorem mem_sup : A ∈ 𝒜 ⊔ ℬ ↔ ∃ A₁ ∈ 𝒜, ∃ A₂ ∈ ℬ, A₁ ∩ A₂ = A := by
-  constructor
-  · refine fun hA ↦ le_def.1 (sup_le (le_def.2 fun C hC ↦ ?_) (le_def.2 fun C hC ↦ ?_) :
-      𝒜 ⊔ ℬ ≤ pairwiseInter 𝒜 ℬ) hA
-    · exact ⟨C, hC, univ, ℬ.univ_mem, inter_univ C⟩
-    · exact ⟨univ, 𝒜.univ_mem, C, hC, univ_inter C⟩
-  · rintro ⟨A₁, hA₁, A₂, hA₂, rfl⟩
-    exact inter_mem (le_def.1 le_sup_left hA₁) (le_def.1 le_sup_right hA₂)
-
-theorem sup_eq : 𝒜 ⊔ ℬ = pairwiseInter 𝒜 ℬ :=
-  ClosureSubsystem.ext (Set.ext fun _ ↦ mem_sup)
+variable {𝒜 ℬ : ClosureSubsystem (IsExtent r)} {A B : Set α}
 
 /-! ### The canonical scale of a closure system -/
 
 /-- The canonical scale context `(G, 𝒜, ∈)` of a closure system `𝒜`: its attributes are the
 closed sets, and an object has the attribute `A` if it belongs to `A`. -/
-def context (𝒜 : ClosureSubsystem r) : α → {A // A ∈ 𝒜} → Prop :=
+def context (𝒜 : ClosureSubsystem (IsExtent r)) : α → {A // A ∈ 𝒜} → Prop :=
   fun a A ↦ a ∈ A.1
 
 theorem lowerPolar_context (T : Set {A // A ∈ 𝒜}) :
@@ -237,11 +108,12 @@ theorem isExtent_context_iff : IsExtent 𝒜.context A ↔ A ∈ 𝒜 := by
     simp [lowerPolar_context]
 
 /-- The identity is a scale-measure into the canonical scale of a closure system of extents. -/
-theorem isScaleMeasure_context (𝒜 : ClosureSubsystem r) : IsScaleMeasure r 𝒜.context id :=
+theorem isScaleMeasure_context (𝒜 : ClosureSubsystem (IsExtent r)) :
+    IsScaleMeasure r 𝒜.context id :=
   fun _ hA ↦ 𝒜.isExtent (isExtent_context_iff.1 hA)
 
 @[simp]
-theorem scaleExtents_context (𝒜 : ClosureSubsystem r) :
+theorem scaleExtents_context (𝒜 : ClosureSubsystem (IsExtent r)) :
     scaleExtents 𝒜.context id = 𝒜.carrier := by
   ext A
   simp [scaleExtents]
@@ -251,10 +123,10 @@ end ClosureSubsystem
 /-! ### The closure system of a scale-measure -/
 
 /-- The closure system of the extents reflected by a scale-measure. -/
-def IsScaleMeasure.closureSubsystem (h : IsScaleMeasure r s σ) : ClosureSubsystem r where
+def IsScaleMeasure.closureSubsystem (h : IsScaleMeasure r s σ) : ClosureSubsystem (IsExtent r) where
   carrier := scaleExtents s σ
   sInter_mem' _ hS := sInter_mem_scaleExtents hS
-  isExtent' _ hA := isScaleMeasure_iff_scaleExtents_subset.1 h hA
+  isClosed' _ hA := isScaleMeasure_iff_scaleExtents_subset.1 h hA
 
 @[simp]
 theorem IsScaleMeasure.mem_closureSubsystem (h : IsScaleMeasure r s σ) {A : Set α} :
@@ -268,7 +140,7 @@ theorem IsScaleMeasure.scaleEquiv_context (h : IsScaleMeasure r s σ) :
   (ClosureSubsystem.scaleExtents_context h.closureSubsystem).symm
 
 @[simp]
-theorem ClosureSubsystem.closureSubsystem_context (𝒜 : ClosureSubsystem r) :
+theorem ClosureSubsystem.closureSubsystem_context (𝒜 : ClosureSubsystem (IsExtent r)) :
     𝒜.isScaleMeasure_context.closureSubsystem = 𝒜 :=
   ClosureSubsystem.ext 𝒜.scaleExtents_context
 
@@ -332,7 +204,7 @@ structure ScaleMeasure (r : α → β → Prop) where
 namespace ScaleMeasure
 
 /-- The closure system of extents reflected by a bundled scale-measure. -/
-def closureSubsystem (m : ScaleMeasure r) : ClosureSubsystem r :=
+def closureSubsystem (m : ScaleMeasure r) : ClosureSubsystem (IsExtent r) :=
   m.isScaleMeasure.closureSubsystem
 
 /-- Scale-measures are preordered by refinement: `m ≤ n` if `m` is coarser than `n`. -/
@@ -348,7 +220,7 @@ theorem le_iff_closureSubsystem_le {m n : ScaleMeasure r} :
   Iff.rfl
 
 /-- The canonical scale-measure of a closure system of extents. -/
-def canonical (𝒜 : ClosureSubsystem r) : ScaleMeasure r where
+def canonical (𝒜 : ClosureSubsystem (IsExtent r)) : ScaleMeasure r where
   Obj := α
   Attr := {A // A ∈ 𝒜}
   scale := 𝒜.context
@@ -356,7 +228,7 @@ def canonical (𝒜 : ClosureSubsystem r) : ScaleMeasure r where
   isScaleMeasure := 𝒜.isScaleMeasure_context
 
 @[simp]
-theorem closureSubsystem_canonical (𝒜 : ClosureSubsystem r) :
+theorem closureSubsystem_canonical (𝒜 : ClosureSubsystem (IsExtent r)) :
     (canonical 𝒜).closureSubsystem = 𝒜 :=
   𝒜.closureSubsystem_context
 
@@ -374,7 +246,8 @@ abbrev ScaleHierarchy (r : α → β → Prop) : Type _ :=
 
 /-- The scale-hierarchy of a context is isomorphic to the lattice of closure systems of extents
 of the context. -/
-noncomputable def scaleHierarchyIso (r : α → β → Prop) : ClosureSubsystem r ≃o ScaleHierarchy r :=
+noncomputable def scaleHierarchyIso (r : α → β → Prop) :
+    ClosureSubsystem (IsExtent r) ≃o ScaleHierarchy r :=
   OrderIso.ofSurjective
     (OrderEmbedding.ofMapLEIff
       (fun 𝒜 ↦ toAntisymmetrization (· ≤ ·) (ScaleMeasure.canonical 𝒜)) fun 𝒜 ℬ ↦ by
@@ -386,7 +259,7 @@ noncomputable def scaleHierarchyIso (r : α → β → Prop) : ClosureSubsystem 
       | _ m => exact ⟨m.closureSubsystem, Quotient.sound m.antisymmRel_canonical⟩
 
 @[simp]
-theorem scaleHierarchyIso_apply (𝒜 : ClosureSubsystem r) :
+theorem scaleHierarchyIso_apply (𝒜 : ClosureSubsystem (IsExtent r)) :
     scaleHierarchyIso r 𝒜 = toAntisymmetrization (· ≤ ·) (ScaleMeasure.canonical 𝒜) :=
   rfl
 

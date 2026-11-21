@@ -24,15 +24,17 @@ open FCA Order Set
 
 /-- In the contranominal scale every set is an extent, so `{G, {0}}` is an atom of the
 scale-hierarchy. -/
-example : IsAtom (ClosureSubsystem.pair (r := (· ≠ ·)) ({0} : Set (Fin 3)) (isExtent_ne _)) :=
+example : IsAtom
+    (ClosureSubsystem.pair (p := IsExtent (· ≠ ·)) ({0} : Set (Fin 3)) (isExtent_ne _)) :=
   ClosureSubsystem.isAtom_pair fun h ↦ by
     have : (1 : Fin 3) ∈ ({0} : Set (Fin 3)) := h ▸ mem_univ _
     simp at this
 
 /-- An atom covers the bottom element, and so has rank one. -/
-example : grade ℕ (ClosureSubsystem.pair (r := (· ≠ ·)) ({0} : Set (Fin 3)) (isExtent_ne _)) =
-    1 := by
-  have h : IsAtom (ClosureSubsystem.pair (r := (· ≠ ·)) ({0} : Set (Fin 3)) (isExtent_ne _)) :=
+example : grade ℕ
+    (ClosureSubsystem.pair (p := IsExtent (· ≠ ·)) ({0} : Set (Fin 3)) (isExtent_ne _)) = 1 := by
+  have h : IsAtom
+      (ClosureSubsystem.pair (p := IsExtent (· ≠ ·)) ({0} : Set (Fin 3)) (isExtent_ne _)) :=
     ClosureSubsystem.isAtom_pair fun h ↦ by
       have : (1 : Fin 3) ∈ ({0} : Set (Fin 3)) := h ▸ mem_univ _
       simp at this
@@ -41,12 +43,12 @@ example : grade ℕ (ClosureSubsystem.pair (r := (· ≠ ·)) ({0} : Set (Fin 3)
   simp [ClosureSubsystem.trivial]
 
 /-- The bottom of the scale-hierarchy has rank zero. -/
-example : grade ℕ (⊥ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) = 0 :=
+example : grade ℕ (⊥ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) = 0 :=
   grade_bot
 
 /-- Removing the empty set from the extents of the contranominal scale on two objects does not
 yield a coatom: the empty set is the intersection of `{0}` and `{1}`. -/
-example : ¬∃ 𝒜 : ClosureSubsystem (α := Fin 2) (· ≠ ·), IsCoatom 𝒜 ∧
+example : ¬∃ 𝒜 : ClosureSubsystem (IsExtent (α := Fin 2) (· ≠ ·)), IsCoatom 𝒜 ∧
     𝒜.carrier = {B | IsExtent (α := Fin 2) (· ≠ ·) B ∧ B ≠ ∅} := by
   rintro ⟨𝒜, -, h⟩
   have h0 : ({0} : Set (Fin 2)) ∈ 𝒜 :=
@@ -61,14 +63,14 @@ example : ¬∃ 𝒜 : ClosureSubsystem (α := Fin 2) (· ≠ ·), IsCoatom 𝒜
 
 /-- The number of meet-irreducible scale-measures is the number of covering pairs of the concept
 lattice. -/
-example : Nat.card {𝒜 : ClosureSubsystem (α := Fin 2) (· ≠ ·) // InfIrred 𝒜} =
+example : Nat.card {𝒜 : ClosureSubsystem (IsExtent (α := Fin 2) (· ≠ ·)) // InfIrred 𝒜} =
     Nat.card {p : Concept (Fin 2) (Fin 2) (· ≠ ·) × Concept (Fin 2) (Fin 2) (· ≠ ·) //
       p.1 ⋖ p.2} :=
   ClosureSubsystem.natCard_infIrred _
 
 /-- The extents of the contranominal scale respecting `∅ → {0}` form a meet-irreducible
 scale-measure, since `{0}` covers `∅`. -/
-example : InfIrred (ClosureSubsystem.respecting (α := Fin 2) (· ≠ ·) ∅ {0}) := by
+example : InfIrred (ClosureSubsystem.respecting (IsExtent (α := Fin 2) (· ≠ ·)) ∅ {0}) := by
   refine (ClosureSubsystem.infIrred_respecting_iff (isExtent_ne _) (isExtent_ne _)
     ((empty_subset _).ssubset_of_ne (singleton_ne_empty _).symm)).2 fun D _ _ hD ↦ ?_
   exact subset_singleton_iff_eq.1 hD
@@ -77,7 +79,8 @@ example : InfIrred (ClosureSubsystem.respecting (α := Fin 2) (· ≠ ·) ∅ {0
 
 /-- The extents of the ordinal scale on a chain form a chain, so its scale-hierarchy is
 distributive. -/
-example (𝒜 ℬ 𝒞 : ClosureSubsystem (α := Fin 3) (· ≤ ·)) : (𝒜 ⊔ ℬ) ⊓ (𝒜 ⊔ 𝒞) ≤ 𝒜 ⊔ ℬ ⊓ 𝒞 := by
+example (𝒜 ℬ 𝒞 : ClosureSubsystem (IsExtent (α := Fin 3) (· ≤ ·))) :
+    (𝒜 ⊔ ℬ) ⊓ (𝒜 ⊔ 𝒞) ≤ 𝒜 ⊔ ℬ ⊓ 𝒞 := by
   refine ClosureSubsystem.sup_inf_le_iff_total.2 ?_ 𝒜 ℬ 𝒞
   rintro _ _ ⟨S, rfl⟩ ⟨T, rfl⟩
   refine or_iff_not_imp_left.2 fun h b hb s hs ↦ ?_
@@ -88,7 +91,8 @@ example (𝒜 ℬ 𝒞 : ClosureSubsystem (α := Fin 3) (· ≤ ·)) : (𝒜 ⊔
   exact hba.trans (ha hs)
 
 /-- The scale-hierarchy of the contranominal scale on two objects is not distributive. -/
-example : ¬∀ 𝒜 ℬ 𝒞 : ClosureSubsystem (α := Fin 2) (· ≠ ·), (𝒜 ⊔ ℬ) ⊓ (𝒜 ⊔ 𝒞) ≤ 𝒜 ⊔ ℬ ⊓ 𝒞 := by
+example : ¬∀ 𝒜 ℬ 𝒞 : ClosureSubsystem (IsExtent (α := Fin 2) (· ≠ ·)),
+    (𝒜 ⊔ ℬ) ⊓ (𝒜 ⊔ 𝒞) ≤ 𝒜 ⊔ ℬ ⊓ 𝒞 := by
   rw [ClosureSubsystem.sup_inf_le_iff_total]
   intro h
   rcases h {0} {1} (isExtent_ne _) (isExtent_ne _) with h | h
@@ -96,28 +100,31 @@ example : ¬∀ 𝒜 ℬ 𝒞 : ClosureSubsystem (α := Fin 2) (· ≠ ·), (�
   · simpa using h (mem_singleton 1)
 
 /-- Join-semidistributivity for a finite context. -/
-example (𝒜 ℬ 𝒞 : ClosureSubsystem (α := Fin 3) (· ≠ ·)) (h : 𝒜 ⊔ ℬ = 𝒜 ⊔ 𝒞) :
+example (𝒜 ℬ 𝒞 : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) (h : 𝒜 ⊔ ℬ = 𝒜 ⊔ 𝒞) :
     𝒜 ⊔ ℬ = 𝒜 ⊔ ℬ ⊓ 𝒞 :=
   ClosureSubsystem.sup_eq_sup_inf_of_sup_eq_sup h
 
 /-- Join-pseudocomplements: there is a least scale-measure whose join with a given one is the
 finest scale-measure. -/
-example (𝒜 ℬ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) : 𝒜.joinPseudocompl ≤ ℬ ↔ 𝒜 ⊔ ℬ = ⊤ :=
+example (𝒜 ℬ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) :
+    𝒜.joinPseudocompl ≤ ℬ ↔ 𝒜 ⊔ ℬ = ⊤ :=
   ClosureSubsystem.joinPseudocompl_le_iff
 
 /-- The join-pseudocomplement of the finest scale-measure is the coarsest one: no irreducible
 extent lies outside the finest scale-measure. -/
-example : (⊤ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).joinPseudocompl = ⊥ := by
+example : (⊤ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))).joinPseudocompl = ⊥ := by
   refine eq_bot_iff.2 (ClosureSubsystem.le_def.2 fun B hB ↦ ClosureSubsystem.mem_bot.2 ?_)
   obtain ⟨T, hT, rfl⟩ := ClosureSubsystem.mem_joinPseudocompl.1 hB
   exact sInter_eq_univ.2 fun A hA ↦ absurd (hT A hA).1.1 (hT A hA).2
 
 /-- The join-pseudocomplement of the coarsest scale-measure contains every irreducible extent,
 for instance `{0}ᶜ` in the contranominal scale. -/
-example : ({0}ᶜ : Set (Fin 3)) ∈ (⊥ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).joinPseudocompl := by
-  have hirr : ({0}ᶜ : Set (Fin 3)) ∈ (⊤ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).irreducibles := by
+example : ({0}ᶜ : Set (Fin 3)) ∈
+    (⊥ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))).joinPseudocompl := by
+  have hirr : ({0}ᶜ : Set (Fin 3)) ∈
+      (⊤ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))).irreducibles := by
     refine ⟨ClosureSubsystem.mem_top.2 (isExtent_ne _), fun h ↦ ?_⟩
-    have h0 : (0 : Fin 3) ∈ ⋂₀ {B | B ∈ (⊤ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) ∧
+    have h0 : (0 : Fin 3) ∈ ⋂₀ {B | B ∈ (⊤ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) ∧
         ({0}ᶜ : Set (Fin 3)) ⊂ B} := by
       rintro B ⟨-, hB⟩
       obtain ⟨x, hx, hx'⟩ := exists_of_ssubset hB
@@ -131,17 +138,18 @@ example : ({0}ᶜ : Set (Fin 3)) ∈ (⊥ : ClosureSubsystem (α := Fin 3) (· �
   exact this rfl
 
 /-- Meet-distributivity: the interval above the meet of the lower covers is a powerset. -/
-example (ℬ : ClosureSubsystem (α := Fin 3) (· ≠ ·)) :
+example (ℬ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) :
     Nonempty (Set.Icc (ℬ ⊓ sInf {𝒜 | 𝒜 ⋖ ℬ}) ℬ ≃o Set ℬ.irreducibles) :=
   ℬ.core_eq_inf_sInf_covBy ▸ ⟨ℬ.IccCoreIso⟩
 
 /-! ### General lattice properties -/
 
-example : IsJoinSemidistrib (ClosureSubsystem (α := Fin 3) (· ≠ ·)) := inferInstance
+example : IsJoinSemidistrib (ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) := inferInstance
 
-example : IsJoinPseudocomplemented (ClosureSubsystem (α := Fin 3) (· ≠ ·)) := inferInstance
+example : IsJoinPseudocomplemented (ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) :=
+  inferInstance
 
-example : IsMeetDistrib (ClosureSubsystem (α := ℕ) (· ≤ ·)) := inferInstance
+example : IsMeetDistrib (ClosureSubsystem (IsExtent (α := ℕ) (· ≤ ·))) := inferInstance
 
 /-- A distributive lattice is join- and meet-semidistributive. -/
 example : IsJoinSemidistrib (Set ℕ) ∧ IsMeetSemidistrib (Set ℕ) := ⟨inferInstance, inferInstance⟩
@@ -152,6 +160,22 @@ example (s : Set ℕ) : IsMeetPseudocompl s sᶜ ∧ IsJoinPseudocompl s sᶜ :=
 
 /-- Finite chains are join-pseudocomplemented, as finite join-semidistributive lattices. -/
 example : IsJoinPseudocomplemented (Fin 4) := isJoinPseudocomplemented_of_finite
+
+/-! ### Closure systems contained in an arbitrary closure system -/
+
+/-- The lattice of all closure systems on a finite set is join-semidistributive. -/
+example : IsJoinSemidistrib (ClosureSubsystem fun _ : Set (Fin 3) ↦ True) := inferInstance
+
+/-- The closure systems coarser than that of a closure operator form a meet-distributive
+lattice. -/
+example (c : ClosureOperator (Set ℕ)) : IsMeetDistrib (ClosureSubsystem c.IsClosed) :=
+  inferInstance
+
+/-- In the lattice of all closure systems on a set, `{univ, A}` is an atom for every `A ≠ univ`. -/
+example : IsAtom (ClosureSubsystem.pair (p := fun _ : Set (Fin 3) ↦ True) {0} trivial) :=
+  ClosureSubsystem.isAtom_pair fun h ↦ by
+    have : (1 : Fin 3) ∈ ({0} : Set (Fin 3)) := h ▸ mem_univ _
+    simp at this
 
 /-! ### Structural properties of concept lattices -/
 
@@ -170,7 +194,7 @@ example (r : Fin 5 → Fin 5 → Prop) : IsMeetSemidistrib (Concept _ _ r) ↔
 
 /-- Every scale-measure of a context with finitely many attributes is representable by
 conjunctions. -/
-example (𝒜 : ClosureSubsystem (α := Fin 3) (β := Fin 3) (· ≠ ·)) :
+example (𝒜 : ClosureSubsystem (IsExtent (α := Fin 3) (β := Fin 3) (· ≠ ·))) :
     𝒜.IsRepresentable {φ | φ.IsConjunctive} :=
   𝒜.isRepresentable_isConjunctive
 
@@ -182,11 +206,11 @@ example : ¬(ClosureSubsystem.pair ({0} : Set (Fin 3)) isExtent_fork_singleton).
 /-! ### Scaling dimension -/
 
 /-- The coarsest scale-measure is ordinal, so its ordinal scaling dimension is at most one. -/
-example : (⊥ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).HasOrdinalCover Unit :=
+example : (⊥ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))).HasOrdinalCover Unit :=
   ClosureSubsystem.hasOrdinalCover_unit_iff.2 ClosureSubsystem.isOrdinal_bot
 
 /-- The finest scale-measure of the contranominal scale on two objects is not ordinal. -/
-example : ¬(⊤ : ClosureSubsystem (α := Fin 2) (· ≠ ·)).IsOrdinal := by
+example : ¬(⊤ : ClosureSubsystem (IsExtent (α := Fin 2) (· ≠ ·))).IsOrdinal := by
   intro h
   rcases h (A := {0}) (B := {1}) (ClosureSubsystem.mem_top.2 (isExtent_ne _))
     (ClosureSubsystem.mem_top.2 (isExtent_ne _)) with h | h
@@ -194,7 +218,7 @@ example : ¬(⊤ : ClosureSubsystem (α := Fin 2) (· ≠ ·)).IsOrdinal := by
   · simpa using h (mem_singleton 1)
 
 /-- The order dimension is at most the ordinal scaling dimension. -/
-example (𝒜 : ClosureSubsystem (α := Fin 3) (· ≠ ·)) (h : 𝒜.HasOrdinalCover (Fin 2)) :
+example (𝒜 : ClosureSubsystem (IsExtent (α := Fin 3) (· ≠ ·))) (h : 𝒜.HasOrdinalCover (Fin 2)) :
     HasRealizer (Concept (Fin 3) {A // A ∈ 𝒜} 𝒜.context) (Fin 2) :=
   h.hasRealizer_concept
 

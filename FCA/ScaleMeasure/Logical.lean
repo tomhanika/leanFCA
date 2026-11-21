@@ -267,26 +267,26 @@ theorem isScaleMeasure_conjunctiveScale (r : α → β → Prop) (f : δ → Set
 
 namespace ClosureSubsystem
 
-variable {𝒜 : ClosureSubsystem r}
+variable {𝒜 : ClosureSubsystem (IsExtent r)}
 
 /-- The *conjunctive normal form* of a closure system `𝒜` of extents of `r`: the scale with one
 conjunctive attribute `⋀ Aᴵ` for every `A ∈ 𝒜`. -/
-def conjunctiveNormalForm (𝒜 : ClosureSubsystem r) : α → {A // A ∈ 𝒜} → Prop :=
+def conjunctiveNormalForm (𝒜 : ClosureSubsystem (IsExtent r)) : α → {A // A ∈ 𝒜} → Prop :=
   fun a A ↦ conjunctiveScale r a (upperPolar r A.1)
 
 /-- The conjunctive normal form coincides with the canonical scale. -/
-theorem conjunctiveNormalForm_eq_context (𝒜 : ClosureSubsystem r) :
+theorem conjunctiveNormalForm_eq_context (𝒜 : ClosureSubsystem (IsExtent r)) :
     𝒜.conjunctiveNormalForm = 𝒜.context := by
   ext a A
   rw [conjunctiveNormalForm, conjunctiveScale, (𝒜.isExtent A.2).eq]
   rfl
 
-theorem isScaleMeasure_conjunctiveNormalForm (𝒜 : ClosureSubsystem r) :
+theorem isScaleMeasure_conjunctiveNormalForm (𝒜 : ClosureSubsystem (IsExtent r)) :
     IsScaleMeasure r 𝒜.conjunctiveNormalForm id :=
   isScaleMeasure_conjunctiveScale r _
 
 @[simp]
-theorem scaleExtents_conjunctiveNormalForm (𝒜 : ClosureSubsystem r) :
+theorem scaleExtents_conjunctiveNormalForm (𝒜 : ClosureSubsystem (IsExtent r)) :
     scaleExtents 𝒜.conjunctiveNormalForm id = 𝒜.carrier := by
   rw [conjunctiveNormalForm_eq_context, scaleExtents_context]
 

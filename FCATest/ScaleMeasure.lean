@@ -116,7 +116,7 @@ example (h₁ : IsScaleMeasure (α := Fin 4) (· ≤ ·) (restrictAttributes (·
   h₁.closureSubsystem_apposition h₂
 
 /-- The bottom of the hierarchy only reflects the extent of all objects. -/
-example (A : Set (Fin 3)) : A ∈ (⊥ : ClosureSubsystem (α := Fin 3) (· ≤ ·)) ↔ A = univ :=
+example (A : Set (Fin 3)) : A ∈ (⊥ : ClosureSubsystem (IsExtent (α := Fin 3) (· ≤ ·))) ↔ A = univ :=
   ClosureSubsystem.mem_bot
 
 /-- The scale-hierarchy is isomorphic to the closure systems of extents; in particular the

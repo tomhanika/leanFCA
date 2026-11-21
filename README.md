@@ -33,6 +33,10 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.Order.Semidistributive` | Semidistributive, pseudocomplemented and meet-distributive lattices |
 | `FCA.Order.Dimension` | Realizers and the order dimension of a partial order |
 | `FCA.ClosureSystem` | Extents and intents as closure systems; every closure operator is the intent closure of a context |
+| **Closure systems** | |
+| `FCA.Order.ClosureSubsystem` | The complete lattice of closure systems contained in a closure system; meet, join, closure, generated closure systems |
+| `FCA.Order.ClosureSubsystem.Structure` | Its structure: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, join-pseudocomplements and their explicit description, meet-distributivity |
+| `FCA.Order.ClosureSubsystem.Ordinal` | Covers of a closure system by chains of closed sets |
 | **Structure of contexts** | |
 | `FCA.Context.Constructions` | Complement, apposition, subposition, subcontexts, disjoint union, direct sum |
 | `FCA.Context.Clarified` | Clarified contexts; clarification preserves the concept lattice |
@@ -55,9 +59,9 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.ScaleMeasure.Hierarchy` | The scale-hierarchy is isomorphic to the complete lattice of closure systems of extents; canonical representation; meet and join |
 | `FCA.ScaleMeasure.Logical` | Logical attributes and the conjunctive normal form of scale-measures |
 | `FCA.ScaleMeasure.Dimension` | Ferrers and order dimension bounds for scale-measures |
-| `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, join-pseudocomplements and their explicit description, meet-distributivity |
+| `FCA.ScaleMeasure.Structure` | Meet-irreducible elements of the scale-hierarchy and the covering pairs of the concept lattice; the general structure theory is in `FCA.Order.ClosureSubsystem.Structure` |
 | `FCA.ScaleMeasure.Fragment` | Which scale-measures are representable in a fragment of propositional logic, e.g. by disjunctions only |
-| `FCA.ScaleMeasure.ScalingDimension` | Scaling dimension inside the scale-hierarchy; ordinal scaling dimension bounds the order dimension and is a chain-cover number of the irreducible extents |
+| `FCA.ScaleMeasure.ScalingDimension` | Scaling dimension inside the scale-hierarchy; the ordinal scaling dimension bounds the order dimension |
 | `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |

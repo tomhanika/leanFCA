@@ -191,7 +191,7 @@ namespace ClosureSubsystem
 /-- The closure systems of extents of `adjoinTop r` are the closure systems of extents of `r`
 together with the choice whether the set of old objects is closed. -/
 def adjoinTopIso (r : α → β → Prop) :
-    ClosureSubsystem (adjoinTop r) ≃o ClosureSubsystem r × Prop :=
+    ClosureSubsystem (IsExtent (adjoinTop r)) ≃o ClosureSubsystem (IsExtent r) × Prop :=
   Equiv.toOrderIso
     { toFun 𝒜 :=
         (⟨{A | ∃ X ∈ 𝒜, some ⁻¹' X = A}, fun S hS ↦ by
@@ -264,7 +264,7 @@ def adjoinTopIso (r : α → β → Prop) :
 /-- The closure systems of extents of `adjoinBot r` are the closure systems of extents of `r`
 together with the choice whether the empty set is closed. -/
 def adjoinBotIso (r : α → β → Prop) :
-    ClosureSubsystem (adjoinBot r) ≃o ClosureSubsystem r × Prop :=
+    ClosureSubsystem (IsExtent (adjoinBot r)) ≃o ClosureSubsystem (IsExtent r) × Prop :=
   Equiv.toOrderIso
     { toFun 𝒜 :=
         (⟨{A | insert none (some '' A) ∈ 𝒜}, fun S hS ↦ by
@@ -317,7 +317,7 @@ def adjoinBotIso (r : α → β → Prop) :
 /-- Adjoining a greatest element to a concept lattice and adjoining a least element yield
 isomorphic lattices of closure systems of extents. -/
 def adjoinTopAdjoinBotIso (r : α → β → Prop) :
-    ClosureSubsystem (adjoinTop r) ≃o ClosureSubsystem (adjoinBot r) :=
+    ClosureSubsystem (IsExtent (adjoinTop r)) ≃o ClosureSubsystem (IsExtent (adjoinBot r)) :=
   (adjoinTopIso r).trans (adjoinBotIso r).symm
 
 end ClosureSubsystem
@@ -356,7 +356,7 @@ theorem isEmpty_concept_adjoinTop_orderIso_adjoinBot :
 /-- The lattice of closure systems of extents does not determine the concept lattice. -/
 theorem exists_closureSubsystem_orderIso_and_isEmpty_concept_orderIso :
     ∃ r₁ r₂ : Option Bool → Option Bool → Prop,
-      Nonempty (ClosureSubsystem r₁ ≃o ClosureSubsystem r₂) ∧
+      Nonempty (ClosureSubsystem (IsExtent r₁) ≃o ClosureSubsystem (IsExtent r₂)) ∧
         IsEmpty (Concept _ _ r₁ ≃o Concept _ _ r₂) :=
   ⟨_, _, ⟨ClosureSubsystem.adjoinTopAdjoinBotIso _⟩, isEmpty_concept_adjoinTop_orderIso_adjoinBot⟩
 

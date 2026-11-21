@@ -42,7 +42,7 @@ canonical form.
 
 @[expose] public section
 
-open Set Function
+open Set Function Order
 
 namespace FCA
 
@@ -52,13 +52,13 @@ variable {α β γ δ ζ ι κ : Type*} {r : α → β → Prop}
 
 /-- A coarser closure system of extents has a canonical scale of at most the Ferrers dimension
 of a finer one. -/
-theorem ClosureSubsystem.HasFerrersCover.mono {𝒜 ℬ : ClosureSubsystem r} (h : 𝒜 ≤ ℬ)
+theorem ClosureSubsystem.HasFerrersCover.mono {𝒜 ℬ : ClosureSubsystem (IsExtent r)} (h : 𝒜 ≤ ℬ)
     (hℬ : HasFerrersCover ℬ.context ι) : HasFerrersCover 𝒜.context ι :=
   hℬ.comp id fun A : {A // A ∈ 𝒜} ↦ (⟨A.1, ClosureSubsystem.le_def.1 h A.2⟩ : {A // A ∈ ℬ})
 
 /-- The concept lattice of the canonical scale of a coarser closure system of extents has at
 most the order dimension of that of a finer one. -/
-theorem ClosureSubsystem.hasRealizer_concept_mono {𝒜 ℬ : ClosureSubsystem r} (h : 𝒜 ≤ ℬ)
+theorem ClosureSubsystem.hasRealizer_concept_mono {𝒜 ℬ : ClosureSubsystem (IsExtent r)} (h : 𝒜 ≤ ℬ)
     (hℬ : HasRealizer (Concept α {A // A ∈ ℬ} ℬ.context) ι) :
     HasRealizer (Concept α {A // A ∈ 𝒜} 𝒜.context) ι :=
   hasRealizer_concept_iff.2 (HasFerrersCover.mono h (hasRealizer_concept_iff.1 hℬ))
