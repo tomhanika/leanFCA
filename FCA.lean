@@ -32,6 +32,7 @@ public import FCA.Order.ClosureSubsystem.Nominal
 public import FCA.Order.ClosureSubsystem.Ordinal
 public import FCA.Order.ClosureSubsystem.Reconstruction
 public import FCA.Order.ClosureSubsystem.Structure
+public import FCA.Order.ClosureSubsystem.Swap
 public import FCA.Order.ClosureSubsystem.Truncation
 public import FCA.Order.Dimension
 public import FCA.Order.Semidistributive

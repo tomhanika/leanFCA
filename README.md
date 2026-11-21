@@ -38,6 +38,7 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.Order.ClosureSubsystem.Structure` | Its structure: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, join-pseudocomplements and their explicit description, meet-distributivity |
 | `FCA.Order.ClosureSubsystem.Ordinal` | Covers of a closure system by chains of closed sets |
 | `FCA.Order.ClosureSubsystem.Reconstruction` | When two closure systems have isomorphic lattices of closure subsystems; coatomistic closure systems are determined by that lattice |
+| `FCA.Order.ClosureSubsystem.Swap` | Exchanging two isomorphic stacked blocks of closed sets gives an automorphism of the lattice of closure subsystems that is not induced by an automorphism of the closed sets |
 | `FCA.Order.ClosureSubsystem.Truncation` | Truncated powersets; the ordinal scaling dimension is not monotone in the lattice of closure systems |
 | `FCA.Order.ClosureSubsystem.Counterexample` | Join-semidistributivity and join-pseudocomplements fail without the ascending chain condition on closed sets |
 | `FCA.Order.ClosureSubsystem.Ladder` | The lattice of closure subsystems is join-semidistributive iff the closure system has no ladder; it never is for all closure systems on an infinite set |

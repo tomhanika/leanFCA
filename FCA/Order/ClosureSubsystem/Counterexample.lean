@@ -40,7 +40,8 @@ to Giacobazzi, Palamidessi and Ranzato; they also show that the lattice of all c
 a set is join-pseudocomplemented, so that the failure of join-pseudocomplements needs a proper
 closure subsystem of the powerset. Ronse uses the even and the odd numbers in the same way for
 closure systems on a poset which is not a complete lattice, and asks when the lattice of closure
-systems is join-semidistributive or join-pseudocomplemented.
+systems is join-semidistributive or join-pseudocomplemented. For complete lattices the first
+question is answered by a theorem of Adaricheva, see `FCA.Order.ClosureSubsystem.Ladder`.
 
 ## References
 

@@ -290,6 +290,26 @@ example (r : ℕ → Fin 3 → Prop) : IsJoinPseudocomplemented (ClosureSubsyste
 example : ¬IsJoinSemidistrib (ClosureSubsystem fun _ : Set (Option ℕ) ↦ True) :=
   ClosureSubsystem.not_isJoinSemidistrib_option_nat
 
+/-! ### Exchanging blocks of closed sets -/
+
+/-- The automorphism induced by exchanging two blocks does not come from an automorphism of the
+closed sets. -/
+example {p : Set (Fin 3) → Prop} [IsClosureSystem p] {𝒳 𝒴 : Set (ProperClosed p)}
+    {θ : 𝒳 ≃ 𝒴} (h : IsSwappable 𝒳 𝒴 θ) (hne : 𝒳.Nonempty) :
+    ClosureSubsystem.properClosedEquivOfOrderIso h.swapOrderIso = h.swapEquiv ∧
+      ¬∃ e : {A : Set (Fin 3) // p A} ≃o {A : Set (Fin 3) // p A},
+        ∀ A : ProperClosed p, (e ⟨A, A.2.1⟩ : Set (Fin 3)) = h.swapEquiv A :=
+  ⟨h.properClosedEquivOfOrderIso_swapOrderIso, h.not_exists_orderIso hne⟩
+
+/-- In a chain of closed sets any two proper closed sets can be exchanged. -/
+example {α : Type*} {p : Set α → Prop} [IsClosureSystem p]
+    (htot : ∀ z z' : ProperClosed p, (z : Set α) ⊆ z' ∨ (z' : Set α) ⊆ z)
+    {A B : ProperClosed p} (hAB : (A : Set α) ⊂ B) :
+    IsSwappable {A} {B} (Equiv.ofUnique _ _) :=
+  isSwappable_singleton hAB (fun z ↦ htot z A) (fun z ↦ htot z B)
+    (fun z z' h h' ↦ absurd (htot z z') (not_or.2 ⟨h, h'⟩))
+    (fun z z' h h' ↦ absurd (htot z z') (not_or.2 ⟨h, h'⟩))
+
 /-! ### Ladders -/
 
 /-- The lattice of all closure systems on `ℕ` is not join-semidistributive. -/

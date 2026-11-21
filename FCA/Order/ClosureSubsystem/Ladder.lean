@@ -20,8 +20,10 @@ A ladder is an infinite strictly increasing sequence of closed sets, so there is
 ascending chain condition. There is also none if the closed sets form a chain. On the other
 hand, the powerset of every infinite type has a ladder.
 
-The question of when the lattice of closure systems is join-semidistributive was raised by
-Ronse.
+This characterisation is due to Adaricheva, who states it for the lattice of complete
+subsemilattices of a complete semilattice: that lattice is semidistributive if and only if a
+certain infinite semilattice, the ladder above, does not embed. The question of when the lattice
+of closure systems is join-semidistributive was later raised again by Ronse.
 
 ## Main definitions
 
@@ -41,6 +43,8 @@ Ronse.
 
 ## References
 
+* [K. V. Adaricheva, *Semidistributive and coalgebraic lattices of
+  subsemilattices*][adaricheva1988]
 * [C. Ronse, *The poset of closure systems on an infinite poset: detachability and
   semimodularity*][ronse2010]
 -/
