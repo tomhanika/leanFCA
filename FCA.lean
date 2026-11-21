@@ -34,4 +34,5 @@ public import FCA.ScaleMeasure.Fragment
 public import FCA.ScaleMeasure.Hierarchy
 public import FCA.ScaleMeasure.Logical
 public import FCA.ScaleMeasure.Reconstruction
+public import FCA.ScaleMeasure.ScalingDimension
 public import FCA.ScaleMeasure.Structure

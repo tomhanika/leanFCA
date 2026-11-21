@@ -179,6 +179,25 @@ example : ¬(ClosureSubsystem.pair ({0} : Set (Fin 3)) isExtent_fork_singleton).
     {φ | φ.IsDisjunctive} :=
   not_isRepresentable_isDisjunctive_fork
 
+/-! ### Scaling dimension -/
+
+/-- The coarsest scale-measure is ordinal, so its ordinal scaling dimension is at most one. -/
+example : (⊥ : ClosureSubsystem (α := Fin 3) (· ≠ ·)).HasOrdinalCover Unit :=
+  ClosureSubsystem.hasOrdinalCover_unit_iff.2 ClosureSubsystem.isOrdinal_bot
+
+/-- The finest scale-measure of the contranominal scale on two objects is not ordinal. -/
+example : ¬(⊤ : ClosureSubsystem (α := Fin 2) (· ≠ ·)).IsOrdinal := by
+  intro h
+  rcases h (A := {0}) (B := {1}) (ClosureSubsystem.mem_top.2 (isExtent_ne _))
+    (ClosureSubsystem.mem_top.2 (isExtent_ne _)) with h | h
+  · simpa using h (mem_singleton 0)
+  · simpa using h (mem_singleton 1)
+
+/-- The order dimension is at most the ordinal scaling dimension. -/
+example (𝒜 : ClosureSubsystem (α := Fin 3) (· ≠ ·)) (h : 𝒜.HasOrdinalCover (Fin 2)) :
+    HasRealizer (Concept (Fin 3) {A // A ∈ 𝒜} 𝒜.context) (Fin 2) :=
+  h.hasRealizer_concept
+
 /-! ### The scale-hierarchy does not determine the concept lattice -/
 
 example : ∃ r₁ r₂ : Option Bool → Option Bool → Prop,

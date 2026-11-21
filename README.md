@@ -57,6 +57,7 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.ScaleMeasure.Dimension` | Ferrers and order dimension bounds for scale-measures |
 | `FCA.ScaleMeasure.Structure` | Structure of the scale-hierarchy: atoms, covers, grading, coatoms, meet-irreducibles, distributivity, join-semidistributivity, join-pseudocomplements and their explicit description, meet-distributivity |
 | `FCA.ScaleMeasure.Fragment` | Which scale-measures are representable in a fragment of propositional logic, e.g. by disjunctions only |
+| `FCA.ScaleMeasure.ScalingDimension` | Scaling dimension inside the scale-hierarchy; ordinal scaling dimension bounds the order dimension and is a chain-cover number of the irreducible extents |
 | `FCA.ScaleMeasure.Reconstruction` | The scale-hierarchy does not determine the concept lattice |
 | **Morphisms** | |
 | `FCA.Morphism.Bond` | Bonds, their composition, and the correspondence with supremum-preserving maps |
