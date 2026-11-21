@@ -41,7 +41,7 @@ relation `r : α → β → Prop` between a type `α` of objects and a type `β`
 | `FCA.Order.ClosureSubsystem.Truncation` | Truncated powersets; the ordinal scaling dimension is not monotone in the lattice of closure systems |
 | `FCA.Order.ClosureSubsystem.Counterexample` | Join-semidistributivity and join-pseudocomplements fail without the ascending chain condition on closed sets |
 | `FCA.Order.ClosureSubsystem.Ladder` | The lattice of closure subsystems is join-semidistributive iff the closure system has no ladder; it never is for all closure systems on an infinite set |
-| `FCA.Order.ClosureSubsystem.Nominal` | Nominal closure systems and nominal covers; characterisation by partitions into closed sets; for the closure system of a graph these are the proper edge colourings |
+| `FCA.Order.ClosureSubsystem.Nominal` | Nominal closure systems and nominal covers; characterisation by partitions into closed sets and as colourings of the graph of intersecting irreducible closed sets; for the closure system of a graph these are the proper edge colourings |
 | **Structure of contexts** | |
 | `FCA.Context.Constructions` | Complement, apposition, subposition, subcontexts, disjoint union, direct sum |
 | `FCA.Context.Clarified` | Clarified contexts; clarification preserves the concept lattice |

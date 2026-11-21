@@ -28,6 +28,8 @@ colourings: partitions into closed sets are matchings.
   a partition.
 * `FCA.ClosureSubsystem.ofPartition`: the nominal closure system of a partition.
 * `FCA.ClosureSubsystem.HasNominalCover 𝒜 ι`: `𝒜` is the join of `ι` nominal closure systems.
+* `FCA.ClosureSubsystem.irreducibleGraph`: the graph of intersecting `⋂`-irreducible closed
+  sets.
 * `FCA.ClosureSubsystem.edgeSystem G`: the closure system of the whole vertex set, the sets with
   at most one vertex, and the edges of a graph `G`.
 
@@ -36,6 +38,14 @@ colourings: partitions into closed sets are matchings.
 * `FCA.ClosureSubsystem.hasNominalCover_iff`: under the ascending chain condition, `𝒜` is a join
   of `ι` nominal closure systems iff `∅ ∈ 𝒜` and there are `ι` partitions into closed sets of `𝒜`
   containing all nonempty `⋂`-irreducible closed sets of `𝒜`.
+* `FCA.ClosureSubsystem.hasNominalCover_iff_coloring`,
+  `FCA.ClosureSubsystem.hasNominalCover_iff_irreducibleGraph`: under the ascending chain
+  condition, `𝒜` is a join of `ι` nominal closure systems iff `∅ ∈ 𝒜`, the closures of points are
+  pairwise equal or disjoint, and the graph `FCA.ClosureSubsystem.irreducibleGraph` of
+  intersecting `⋂`-irreducible closed sets has a colouring with colours `ι`.
+* `FCA.ClosureSubsystem.hasNominalCover_set_iff`: under the ascending chain condition, `𝒜` is a
+  join of nominal closure systems iff `∅ ∈ 𝒜` and the closures of points are pairwise equal or
+  disjoint.
 * `FCA.ClosureSubsystem.hasNominalCover_top_powerset`,
   `FCA.ClosureSubsystem.card_le_of_hasNominalCover_top_powerset`: the powerset of a finite type
   `α` with at least three elements is a join of `|α|` nominal closure systems and not of fewer.
@@ -174,7 +184,126 @@ theorem hasNominalCover_iff [IsNoetherianClosureSystem p] [Nonempty ι] :
     · exact le_def.1 (le_iSup (fun i ↦ ofPartition (c i) (hc i) (𝒜.isClosed h0)
         fun B hB ↦ 𝒜.isClosed (hmem i B hB)) i) (mem_ofPartition.2 (.inr (.inr hi)))
 
+/-! ### Colourings of the irreducible closed sets -/
+
+omit [IsClosureSystem p] in
+/-- If the closures of points are pairwise equal or disjoint, a closed set meeting the closure of
+a point contains that point. -/
+theorem mem_of_mem_closure_singleton (hb : ∀ g h, h ∈ 𝒜.closure {g} → g ∈ 𝒜.closure {h})
+    {B : Set α} (hB : B ∈ 𝒜) {g h : α} (hg : h ∈ 𝒜.closure {g}) (hh : h ∈ B) : g ∈ B :=
+  closure_subset hB (singleton_subset_iff.2 hh) (hb g h hg)
+
+/-- In a nominal cover, the closures of points are pairwise equal or disjoint. -/
+theorem HasNominalCover.mem_closure_singleton_symm [IsNoetherianClosureSystem p]
+    (h : 𝒜.HasNominalCover ι) {g h' : α} (hh : h' ∈ 𝒜.closure {g}) : g ∈ 𝒜.closure {h'} := by
+  obtain ⟨c, hc, hmem, hirr⟩ := h.exists_partitions
+  refine mem_sInter.2 fun B hB ↦ ?_
+  obtain ⟨T, hT, -, rfl⟩ := mem_generate.1 (le_def.1 𝒜.le_generate_irreducibles hB.1)
+  refine mem_sInter.2 fun C hC ↦ ?_
+  have hhC : h' ∈ C := mem_sInter.1 (hB.2 rfl) C hC
+  rcases hirr C (hT hC) with rfl | ⟨i, hi⟩
+  · exact hhC.elim
+  obtain ⟨B', ⟨hB', hgB'⟩, -⟩ := (hc i).2 g
+  have hhB' : h' ∈ B' := closure_subset (hmem i B' hB') (singleton_subset_iff.2 hgB') hh
+  rwa [(hc i).2 h' |>.unique ⟨hi, hhC⟩ ⟨hB', hhB'⟩]
+
+/-- If the closed sets satisfy the ascending chain condition, `𝒜` is the join of `ι` nominal
+closure systems iff the empty set is closed in `𝒜`, the closures of points are pairwise equal or
+disjoint, and the `⋂`-irreducible closed sets of `𝒜` can be coloured by `ι` such that distinct
+intersecting ones get different colours. -/
+theorem hasNominalCover_iff_coloring [IsNoetherianClosureSystem p] [Nonempty ι] :
+    𝒜.HasNominalCover ι ↔ ∅ ∈ 𝒜 ∧ (∀ g h, h ∈ 𝒜.closure {g} → g ∈ 𝒜.closure {h}) ∧
+      ∃ col : Set α → ι, ∀ A ∈ 𝒜.irreducibles, ∀ B ∈ 𝒜.irreducibles, A ≠ B →
+        (A ∩ B).Nonempty → col A ≠ col B := by
+  classical
+  constructor
+  · intro h
+    refine ⟨h.empty_mem, fun g h' hh ↦ h.mem_closure_singleton_symm hh, ?_⟩
+    obtain ⟨c, hc, -, hirr⟩ := h.exists_partitions
+    refine ⟨fun A ↦ if hA : ∃ i, A ∈ c i then hA.choose else Classical.arbitrary ι,
+      fun A hA B hB hne ⟨x, hxA, hxB⟩ heq ↦ hne ?_⟩
+    have hA' : ∃ i, A ∈ c i := (hirr A hA).resolve_left fun h0 ↦ by simp [h0] at hxA
+    have hB' : ∃ i, B ∈ c i := (hirr B hB).resolve_left fun h0 ↦ by simp [h0] at hxB
+    simp only [hA', hB', ↓reduceDIte] at heq
+    have h1 := hA'.choose_spec
+    have h2 := hB'.choose_spec
+    rw [← heq] at h2
+    exact (hc _).2 x |>.unique ⟨h1, hxA⟩ ⟨h2, hxB⟩
+  · rintro ⟨h0, hb, col, hcol⟩
+    refine hasNominalCover_iff.2 ⟨h0, fun i ↦ {A | A ∈ 𝒜.irreducibles ∧ A.Nonempty ∧ col A = i} ∪
+      {D | ∃ g, D = 𝒜.closure {g} ∧ ∀ A ∈ 𝒜.irreducibles, col A = i → g ∉ A}, fun i ↦ ?_,
+      fun i B hB ↦ ?_, fun A hA ↦ ?_⟩
+    · refine ⟨?_, fun a ↦ ?_⟩
+      · rintro (⟨-, hne, -⟩ | ⟨g, hg, -⟩)
+        · exact hne.ne_empty rfl
+        · exact notMem_empty g (hg ▸ subset_closure (mem_singleton g))
+      · have huniq : ∀ b b', b ∈ ({A | A ∈ 𝒜.irreducibles ∧ A.Nonempty ∧ col A = i} ∪
+            {D | ∃ g, D = 𝒜.closure {g} ∧ ∀ A ∈ 𝒜.irreducibles, col A = i → g ∉ A} :
+              Set (Set α)) →
+            b' ∈ ({A | A ∈ 𝒜.irreducibles ∧ A.Nonempty ∧ col A = i} ∪
+            {D | ∃ g, D = 𝒜.closure {g} ∧ ∀ A ∈ 𝒜.irreducibles, col A = i → g ∉ A} :
+              Set (Set α)) → a ∈ b → a ∈ b' → b = b' := by
+          rintro b b' (⟨hb1, -, hb3⟩ | ⟨g, rfl, hg⟩) (⟨hb1', -, hb3'⟩ | ⟨g', rfl, hg'⟩) ha ha'
+          · by_contra hne
+            exact hcol b hb1 b' hb1' hne ⟨a, ha, ha'⟩ (hb3.trans hb3'.symm)
+          · exact (hg' b hb1 hb3 (mem_of_mem_closure_singleton hb hb1.1 ha' ha)).elim
+          · exact (hg b' hb1' hb3' (mem_of_mem_closure_singleton hb hb1'.1 ha ha')).elim
+          · have key : ∀ g, a ∈ 𝒜.closure {g} → 𝒜.closure {g} = 𝒜.closure {a} := fun g hag ↦
+              Subset.antisymm (closure_subset closure_mem (singleton_subset_iff.2 (hb g a hag)))
+                (closure_subset closure_mem (singleton_subset_iff.2 hag))
+            rw [key g ha, key g' ha']
+        by_cases hex : ∃ A ∈ 𝒜.irreducibles, col A = i ∧ a ∈ A
+        · obtain ⟨A, hA, hAi, haA⟩ := hex
+          exact ⟨A, ⟨.inl ⟨hA, ⟨a, haA⟩, hAi⟩, haA⟩, fun b' hb' ↦
+            huniq b' A hb'.1 (.inl ⟨hA, ⟨a, haA⟩, hAi⟩) hb'.2 haA⟩
+        · push Not at hex
+          have hmem : 𝒜.closure {a} ∈ ({A | A ∈ 𝒜.irreducibles ∧ A.Nonempty ∧ col A = i} ∪
+              {D | ∃ g, D = 𝒜.closure {g} ∧ ∀ A ∈ 𝒜.irreducibles, col A = i → g ∉ A} :
+                Set (Set α)) := .inr ⟨a, rfl, hex⟩
+          exact ⟨𝒜.closure {a}, ⟨hmem, subset_closure (mem_singleton a)⟩, fun b' hb' ↦
+            huniq b' _ hb'.1 hmem hb'.2 (subset_closure (mem_singleton a))⟩
+    · rcases hB with ⟨hB, -, -⟩ | ⟨g, rfl, -⟩
+      · exact hB.1
+      · exact closure_mem
+    · rcases A.eq_empty_or_nonempty with rfl | hne
+      · exact .inl rfl
+      · exact .inr ⟨col A, .inl ⟨hA, hne, rfl⟩⟩
+
+/-- If the closed sets satisfy the ascending chain condition, `𝒜` is a join of nominal closure
+systems iff the empty set is closed in `𝒜` and the closures of points are pairwise equal or
+disjoint. -/
+theorem hasNominalCover_set_iff [IsNoetherianClosureSystem p] :
+    𝒜.HasNominalCover (Set α) ↔
+      ∅ ∈ 𝒜 ∧ ∀ g h, h ∈ 𝒜.closure {g} → g ∈ 𝒜.closure {h} :=
+  ⟨fun h ↦ ⟨(hasNominalCover_iff_coloring.1 h).1, (hasNominalCover_iff_coloring.1 h).2.1⟩,
+    fun h ↦ hasNominalCover_iff_coloring.2 ⟨h.1, h.2, id, fun _ _ _ _ hne _ ↦ hne⟩⟩
+
+/-- The graph on the `⋂`-irreducible closed sets of `𝒜` in which two distinct sets are adjacent
+iff they intersect. -/
+def irreducibleGraph (𝒜 : ClosureSubsystem p) : SimpleGraph 𝒜.irreducibles where
+  Adj A B := A ≠ B ∧ ((A : Set α) ∩ B).Nonempty
+  symm := ⟨fun _ _ h ↦ ⟨h.1.symm, inter_comm _ _ ▸ h.2⟩⟩
+  loopless := ⟨fun _ h ↦ h.1 rfl⟩
+
+/-- If the closed sets satisfy the ascending chain condition, `𝒜` is the join of `ι` nominal
+closure systems iff the empty set is closed in `𝒜`, the closures of points are pairwise equal or
+disjoint, and the graph of intersecting `⋂`-irreducible closed sets has a colouring with colours
+`ι`. -/
+theorem hasNominalCover_iff_irreducibleGraph [IsNoetherianClosureSystem p] [Nonempty ι] :
+    𝒜.HasNominalCover ι ↔ ∅ ∈ 𝒜 ∧ (∀ g h, h ∈ 𝒜.closure {g} → g ∈ 𝒜.closure {h}) ∧
+      Nonempty (𝒜.irreducibleGraph.Coloring ι) := by
+  classical
+  rw [hasNominalCover_iff_coloring]
+  refine and_congr_right fun _ ↦ and_congr_right fun _ ↦ ⟨fun ⟨col, hcol⟩ ↦ ?_, fun ⟨C⟩ ↦ ?_⟩
+  · exact ⟨SimpleGraph.Coloring.mk (fun A ↦ col A) fun {A B} hAB ↦
+      hcol A A.2 B B.2 (fun h ↦ hAB.1 (Subtype.ext h)) hAB.2⟩
+  · refine ⟨fun A ↦ if hA : A ∈ 𝒜.irreducibles then C ⟨A, hA⟩ else Classical.arbitrary ι,
+      fun A hA B hB hne hAB ↦ ?_⟩
+    simp only [hA, hB, ↓reduceDIte]
+    exact C.valid (v := ⟨A, hA⟩) (w := ⟨B, hB⟩) ⟨fun h ↦ hne (congrArg Subtype.val h), hAB⟩
+
 /-! ### The powerset -/
+
 
 /-- In a finite type with more than two elements, any two elements miss a third one. -/
 theorem exists_ne_ne_of_two_lt_card [Fintype α] (h : 2 < Fintype.card α) (a b : α) :

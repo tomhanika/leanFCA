@@ -322,6 +322,18 @@ example (G : SimpleGraph (Fin 5)) :
       Nonempty (G.lineGraph.Coloring (Fin 3)) :=
   ClosureSubsystem.hasNominalCover_edgeSystem_iff (by simp)
 
+/-- Nominal covers are colourings of the graph of intersecting irreducible closed sets. -/
+example {p : Set (Fin 5) → Prop} [IsClosureSystem p] (𝒜 : ClosureSubsystem p) :
+    𝒜.HasNominalCover (Fin 3) ↔ ∅ ∈ 𝒜 ∧
+      (∀ g h, h ∈ 𝒜.closure {g} → g ∈ 𝒜.closure {h}) ∧
+      Nonempty (𝒜.irreducibleGraph.Coloring (Fin 3)) :=
+  ClosureSubsystem.hasNominalCover_iff_irreducibleGraph
+
+/-- Existence of a nominal cover with finitely many attributes and infinitely many objects. -/
+example (r : ℕ → Fin 3 → Prop) (𝒜 : ClosureSubsystem (IsExtent r)) :
+    𝒜.HasNominalCover (Set ℕ) ↔ ∅ ∈ 𝒜 ∧ ∀ g h, h ∈ 𝒜.closure {g} → g ∈ 𝒜.closure {h} :=
+  ClosureSubsystem.hasNominalCover_set_iff
+
 /-! ### Ordinal covers are not monotone -/
 
 /-- The sets with at most two elements of a four-element set need six chains … -/
