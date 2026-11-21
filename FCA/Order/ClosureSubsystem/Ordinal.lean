@@ -147,9 +147,10 @@ theorem HasOrdinalCover.exists_chains (h : 𝒜.HasOrdinalCover ι) :
   obtain ⟨i, hi⟩ := exists_mem_of_mem_irreducibles hA
   exact mem_iUnion.2 ⟨i, hi, hA⟩
 
-/-- For a finite ground set, the ordinal scaling dimension of `𝒜` is at most `|ι|` iff the
-`⋂`-irreducible closed sets of `𝒜` can be covered by `ι` chains. -/
-theorem hasOrdinalCover_iff_irreducibles [Finite α] :
+/-- If the closed sets satisfy the ascending chain condition, in particular for a finite ground
+set, the ordinal scaling dimension of `𝒜` is at most `|ι|` iff the `⋂`-irreducible closed sets of
+`𝒜` can be covered by `ι` chains. -/
+theorem hasOrdinalCover_iff_irreducibles [IsNoetherianClosureSystem p] :
     𝒜.HasOrdinalCover ι ↔
       ∃ g : ι → Set (Set α), (∀ i, IsChain (· ⊆ ·) (g i)) ∧ ⋃ i, g i = 𝒜.irreducibles := by
   refine ⟨HasOrdinalCover.exists_chains, fun ⟨g, hg, hirr⟩ ↦

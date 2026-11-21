@@ -71,6 +71,14 @@ variable {α : Type u} {β : Type v} {γ δ ε ζ : Type*} {r : α → β → Pr
 instance : IsClosureSystem (IsExtent r) :=
   ⟨fun _ hS ↦ .sInter hS⟩
 
+/-- The extents of a context with finitely many attributes satisfy the ascending chain
+condition, whatever the number of objects. -/
+instance [Finite β] : IsNoetherianClosureSystem (IsExtent r) :=
+  ⟨Subrelation.wf (r := InvImage (· < ·) fun A : {A : Set α // IsExtent r A} ↦ upperPolar r A)
+    (fun {B A} hAB ↦ (upperPolar_anti r hAB.subset).lt_of_ne fun h ↦
+      hAB.ne (by rw [← A.2.eq, ← B.2.eq, h]))
+    (InvImage.wf _ wellFounded_lt)⟩
+
 namespace ClosureSubsystem
 
 theorem isExtent {𝒜 : ClosureSubsystem (IsExtent r)} {A : Set α} (hA : A ∈ 𝒜) : IsExtent r A :=

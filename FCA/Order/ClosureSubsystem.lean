@@ -6,6 +6,9 @@ Authors: Tom Hanika
 module
 
 public import Mathlib.Order.Closure
+public import Mathlib.Data.Fintype.Powerset
+public import Mathlib.Data.Set.Finite.Lemmas
+public import Mathlib.Data.Set.Finite.Basic
 public import Mathlib.Order.CompleteLattice.Basic
 public import Mathlib.Data.Set.Lattice.Image
 
@@ -22,6 +25,8 @@ closure systems coarser than that of `c`.
 ## Main definitions
 
 * `FCA.IsClosureSystem p`: the sets satisfying `p` are closed under arbitrary intersections.
+* `FCA.IsNoetherianClosureSystem p`: the sets satisfying `p` satisfy the ascending chain
+  condition.
 * `FCA.ClosureSubsystem p`: the closure systems all of whose members satisfy `p`, a complete
   lattice under inclusion.
 * `FCA.ClosureSubsystem.closure`: the closure of a set in a closure system.
@@ -69,6 +74,23 @@ instance : IsClosureSystem fun _ : Set α ↦ True :=
 /-- The closed sets of a closure operator form a closure system. -/
 instance (c : ClosureOperator (Set α)) : IsClosureSystem c.IsClosed :=
   ⟨fun _ hS ↦ ClosureOperator.sInf_isClosed hS⟩
+
+/-- The sets satisfying `p` satisfy the *ascending chain condition*: there is no infinite
+strictly increasing sequence of such sets. This holds in particular on a finite type. -/
+class IsNoetherianClosureSystem (p : Set α → Prop) : Prop where
+  /-- Strict reverse inclusion is well-founded on the sets satisfying `p`. -/
+  wf : WellFounded fun B A : {A : Set α // p A} ↦ (A : Set α) ⊂ B
+
+instance [Finite α] : IsNoetherianClosureSystem p :=
+  ⟨InvImage.wf (fun A : {A : Set α // p A} ↦ (A : Set α)) (wellFounded_gt (α := Set α))⟩
+
+/-- Induction along strict supersets on the sets satisfying `p`, under the ascending chain
+condition. -/
+theorem IsNoetherianClosureSystem.induction [h : IsNoetherianClosureSystem p]
+    {motive : Set α → Prop} {A : Set α} (hA : p A)
+    (ih : ∀ A, p A → (∀ B, p B → A ⊂ B → motive B) → motive A) : motive A :=
+  h.wf.induction (C := fun A ↦ motive A) ⟨A, hA⟩
+    fun A ih' ↦ ih A A.2 fun B hB hAB ↦ ih' ⟨B, hB⟩ hAB
 
 /-- A closure system on `α` all of whose members satisfy `p`. -/
 @[ext]

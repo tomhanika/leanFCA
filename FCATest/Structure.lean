@@ -276,6 +276,20 @@ example {r : Fin 3 → Fin 3 → Prop} [IsCoatomistic (Concept (Fin 3) (Fin 3) r
     Nonempty (Concept (Fin 3) (Fin 3) r ≃o Concept (Fin 4) (Fin 2) s) :=
   nonempty_concept_orderIso_of_scaleHierarchy_orderIso e
 
+/-! ### The ascending chain condition -/
+
+/-- With finitely many attributes the scale-hierarchy is join-semidistributive and
+join-pseudocomplemented, even for infinitely many objects. -/
+example (r : ℕ → Fin 3 → Prop) : IsJoinSemidistrib (ClosureSubsystem (IsExtent r)) :=
+  inferInstance
+
+example (r : ℕ → Fin 3 → Prop) : IsJoinPseudocomplemented (ClosureSubsystem (IsExtent r)) :=
+  inferInstance
+
+/-- Without the chain condition join-semidistributivity fails. -/
+example : ¬IsJoinSemidistrib (ClosureSubsystem fun _ : Set (Option ℕ) ↦ True) :=
+  ClosureSubsystem.not_isJoinSemidistrib_option_nat
+
 /-! ### Ordinal covers are not monotone -/
 
 /-- The sets with at most two elements of a four-element set need six chains … -/
